@@ -1,11 +1,15 @@
 package in.dailyatfive.socialify;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import in.dailyatfive.socialify.adapters.SplashSlideshowAdapter;
+import in.dailyatfive.socialify.models.UserModel;
 
 public class SplashActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
 
@@ -17,11 +21,14 @@ public class SplashActivity extends BaseActivity implements ViewPager.OnPageChan
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        fragmentManager = getSupportFragmentManager();
+        SharedPreferences sharedPreferences = getSharedPreferences("PREF_FILE", Context.MODE_PRIVATE);
+        if(UserModel.isLoggedIn(sharedPreferences)) {
+            Intent intent = new Intent(SplashActivity.this,MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
-//        Intent intent = new Intent(SplashActivity.this,MainActivity.class);
-//        startActivity(intent);
-//        finish();
+        fragmentManager = getSupportFragmentManager();
 
         setContentView(R.layout.activity_splash);
 
