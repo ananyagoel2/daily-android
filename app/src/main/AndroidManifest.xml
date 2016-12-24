@@ -35,8 +35,7 @@
 
         <!-- Facebook Login end -->
 
-        <activity android:name=".SplashActivity"
-            android:theme="@style/SplashTheme">
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,6 +43,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"></activity>
+        <activity android:name=".ui.RegisterActivity"></activity>
     </application>
 
 </manifest>
