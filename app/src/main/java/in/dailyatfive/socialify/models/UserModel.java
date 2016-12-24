@@ -108,4 +108,8 @@ public class UserModel {
     public static void clearUser(SharedPreferences sharedPreferences) {
         sharedPreferences.edit().clear().apply();
     }
+
+    public static boolean isLoggedIn(SharedPreferences sharedPreferences) {
+        return sharedPreferences.contains("CurrentUser");
+    }
 }
