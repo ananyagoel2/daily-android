@@ -18,7 +18,13 @@ public class SplashSlideshowAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return new SplashSlideshowFragment(R.drawable.splash_slide_1);
+        switch (position){
+            case 0 : return SplashSlideshowFragment.newInstance(R.drawable.splash_slide_1);
+            case 1 : return SplashSlideshowFragment.newInstance(R.drawable.splash_slide_2);
+            case 2 : return SplashSlideshowFragment.newInstance(R.drawable.splash_slide_3);
+            case 3 : return SplashSlideshowFragment.newInstance(R.drawable.splash_slide_4);
+        }
+        return SplashSlideshowFragment.newInstance(R.drawable.splash_slide_1);
     }
 
     @Override
