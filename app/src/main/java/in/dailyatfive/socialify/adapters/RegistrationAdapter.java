@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import in.dailyatfive.socialify.fragments.RegEmailFragment;
 import in.dailyatfive.socialify.fragments.RegProfileFragment;
 import in.dailyatfive.socialify.models.UserModel;
 
@@ -21,12 +22,13 @@ public class RegistrationAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0 : return RegProfileFragment.newInstance(userModel);
+            case 1 : return RegEmailFragment.newInstance(userModel);
         }
         return null;
     }
 
     @Override
     public int getCount() {
-        return 1;
+        return 2;
     }
 }
