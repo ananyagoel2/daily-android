@@ -2,7 +2,6 @@ package in.dailyatfive.socialify.fragments;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,9 @@ import in.dailyatfive.socialify.models.UserModel;
 
 public class RegProfileFragment extends BaseFragment {
 
+    private ImageView profile_picture;
+    private EditText first_name;
+    private EditText last_name;
 
     public RegProfileFragment() {
         // Required empty public constructor
@@ -27,9 +29,9 @@ public class RegProfileFragment extends BaseFragment {
 
         View view = inflater.inflate(R.layout.fragment_reg_profile, container, false);
 
-        ImageView profile_picture = (ImageView) view.findViewById(R.id.profile_pic);
-        EditText first_name = (EditText) view.findViewById(R.id.first_name_editbox);
-        EditText last_name = (EditText) view.findViewById(R.id.last_name_editbox);
+        profile_picture = (ImageView) view.findViewById(R.id.profile_pic);
+        first_name = (EditText) view.findViewById(R.id.first_name_editbox);
+        last_name = (EditText) view.findViewById(R.id.last_name_editbox);
 
         first_name.setText(getArguments().getString("first_name"));
         last_name.setText(getArguments().getString("last_name"));
@@ -52,6 +54,20 @@ public class RegProfileFragment extends BaseFragment {
         b.putString("profile_picture_link", userModel.getProfile_picture_link());
         f.setArguments(b);
         return f;
+    }
+
+    public boolean submit() {
+
+        String first_name = this.first_name.getText().toString();
+        String last_name = this.last_name.getText().toString();
+
+        userModel.setFirst_name(first_name);
+        userModel.setLast_name(last_name);
+
+        UserModel.saveUser(sharedPreferences,userModel);
+
+        return true;
+
     }
 
 }
