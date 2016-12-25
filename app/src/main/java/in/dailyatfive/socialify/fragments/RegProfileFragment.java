@@ -37,7 +37,10 @@ public class RegProfileFragment extends Fragment {
         String image_link = getArguments().getString("profile_picture_link");
 
         if(image_link != null && !image_link.equals(""))
-            Picasso.with(getActivity()).load(image_link).into(profile_picture);
+            Picasso.with(getActivity())
+                    .load(image_link)
+                    .placeholder(R.drawable.default_profile_pic)
+                    .into(profile_picture);
         return view;
     }
 
