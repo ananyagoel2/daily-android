@@ -5,11 +5,12 @@
     android:layout_height="match_parent"
     tools:context="in.dailyatfive.socialify.ui.RegisterActivity">
 
-    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+    <in.dailyatfive.socialify.custom.NonSwipableViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/registration_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    </android.support.v4.view.ViewPager>
+    </in.dailyatfive.socialify.custom.NonSwipableViewPager>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,11 +20,13 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:id="@+id/prev_button"
             android:layout_weight="1"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:id="@+id/next_button"
             android:layout_weight="1"/>
 
     </LinearLayout>
