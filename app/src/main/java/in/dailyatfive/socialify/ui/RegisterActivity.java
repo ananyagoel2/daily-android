@@ -2,7 +2,6 @@ package in.dailyatfive.socialify.ui;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -10,7 +9,9 @@ import in.dailyatfive.socialify.BaseActivity;
 import in.dailyatfive.socialify.R;
 import in.dailyatfive.socialify.adapters.RegistrationAdapter;
 import in.dailyatfive.socialify.custom.NonSwipableViewPager;
-import in.dailyatfive.socialify.models.UserModel;
+import in.dailyatfive.socialify.fragments.RegEmailFragment;
+import in.dailyatfive.socialify.fragments.RegMobileFragment;
+import in.dailyatfive.socialify.fragments.RegProfileFragment;
 
 public class RegisterActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
 
@@ -27,7 +28,7 @@ public class RegisterActivity extends BaseActivity implements ViewPager.OnPageCh
 
         registerPager = (NonSwipableViewPager) findViewById(R.id.registration_pager);
 
-        RegistrationAdapter registrationAdapter = new RegistrationAdapter(getSupportFragmentManager(),userModel);
+        final RegistrationAdapter registrationAdapter = new RegistrationAdapter(getSupportFragmentManager(),userModel);
         registerPageCount = registrationAdapter.getCount();
 
         prevButton = (Button) findViewById(R.id.prev_button);
@@ -48,7 +49,16 @@ public class RegisterActivity extends BaseActivity implements ViewPager.OnPageCh
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registerPager.setCurrentItem(registerPager.getCurrentItem()+1,true);
+                int currentPosition = registerPager.getCurrentItem();
+                switch(currentPosition)
+                {
+                    case 0: ((RegProfileFragment) registerPager.getAdapter().instantiateItem(registerPager,0)).submit(); break;
+                    case 1: ((RegEmailFragment) registerPager.getAdapter().instantiateItem(registerPager,1)).submit(); break;
+                    case 2: ((RegMobileFragment) registerPager.getAdapter().instantiateItem(registerPager,2)).submit(); break;
+                }
+                if(currentPosition < registerPageCount) {
+                    registerPager.setCurrentItem(registerPager.getCurrentItem() + 1, true);
+                }
             }
         });
     }
@@ -60,7 +70,7 @@ public class RegisterActivity extends BaseActivity implements ViewPager.OnPageCh
 
     @Override
     public void onPageSelected(int position) {
-        if( registerPager.getCurrentItem() + 1 == registerPageCount ){
+        if( registerPager.getCurrentItem()  == registerPageCount ){
             nextButton.setVisibility(View.INVISIBLE);
         } else {
             nextButton.setVisibility(View.VISIBLE);
