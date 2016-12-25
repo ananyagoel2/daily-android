@@ -16,6 +16,16 @@ public class UserModel {
     private String mobile;
     private boolean admin;
 
+    public String getProfile_picture_link() {
+        return profile_picture_link;
+    }
+
+    public void setProfile_picture_link(String profile_picture_link) {
+        this.profile_picture_link = profile_picture_link;
+    }
+
+    private String profile_picture_link;
+
 
     public String getFirst_name() {
         return first_name;

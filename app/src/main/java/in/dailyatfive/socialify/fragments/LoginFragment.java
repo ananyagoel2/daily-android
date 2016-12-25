@@ -87,6 +87,7 @@ public class LoginFragment extends Fragment {
 
                 userModel.setFirst_name(profile.getFirstName());
                 userModel.setLast_name(profile.getLastName());
+                userModel.setProfile_picture_link(profile.getProfilePictureUri(100,100).toString());
 
                 userModel.setEmail("");
                 userModel.setGender("");
