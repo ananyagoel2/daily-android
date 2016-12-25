@@ -21,7 +21,6 @@ public class SplashActivity extends BaseActivity implements ViewPager.OnPageChan
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("PREF_FILE", Context.MODE_PRIVATE);
         if(UserModel.isLoggedIn(sharedPreferences)) {
             Intent intent = new Intent(SplashActivity.this,MainActivity.class);
             startActivity(intent);
