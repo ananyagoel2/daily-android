@@ -50,13 +50,14 @@ public class RegisterActivity extends BaseActivity implements ViewPager.OnPageCh
             @Override
             public void onClick(View v) {
                 int currentPosition = registerPager.getCurrentItem();
+                boolean goNext = false;
                 switch(currentPosition)
                 {
-                    case 0: ((RegProfileFragment) registerPager.getAdapter().instantiateItem(registerPager,0)).submit(); break;
-                    case 1: ((RegEmailFragment) registerPager.getAdapter().instantiateItem(registerPager,1)).submit(); break;
-                    case 2: ((RegMobileFragment) registerPager.getAdapter().instantiateItem(registerPager,2)).submit(); break;
+                    case 0: goNext = ((RegProfileFragment) registerPager.getAdapter().instantiateItem(registerPager,0)).submit(); break;
+                    case 1: goNext = ((RegEmailFragment) registerPager.getAdapter().instantiateItem(registerPager,1)).submit(); break;
+                    case 2: goNext = ((RegMobileFragment) registerPager.getAdapter().instantiateItem(registerPager,2)).submit(); break;
                 }
-                if(currentPosition < registerPageCount) {
+                if(goNext && currentPosition < registerPageCount) {
                     registerPager.setCurrentItem(registerPager.getCurrentItem() + 1, true);
                 }
             }
