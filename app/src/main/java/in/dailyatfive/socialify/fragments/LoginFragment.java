@@ -28,7 +28,7 @@ import in.dailyatfive.socialify.MainActivity;
 import in.dailyatfive.socialify.R;
 import in.dailyatfive.socialify.models.UserModel;
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends BaseFragment {
 
 
     private LoginButton loginButton;
@@ -72,8 +72,6 @@ public class LoginFragment extends Fragment {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Toast.makeText(getActivity(), "Login Successfull" , Toast.LENGTH_LONG).show();
-
-                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("PREF_FILE", Context.MODE_PRIVATE);
 
                 UserModel.clearUser(sharedPreferences);
 

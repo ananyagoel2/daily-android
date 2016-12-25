@@ -10,7 +10,7 @@ import android.widget.ImageView;
 
 import in.dailyatfive.socialify.R;
 
-public class SplashSlideshowFragment extends Fragment {
+public class SplashSlideshowFragment extends BaseFragment {
 
     public SplashSlideshowFragment() {
         // Required empty public constructor

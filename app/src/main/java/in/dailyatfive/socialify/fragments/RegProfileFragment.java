@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso;
 import in.dailyatfive.socialify.R;
 import in.dailyatfive.socialify.models.UserModel;
 
-public class RegProfileFragment extends Fragment {
+public class RegProfileFragment extends BaseFragment {
 
 
     public RegProfileFragment() {
