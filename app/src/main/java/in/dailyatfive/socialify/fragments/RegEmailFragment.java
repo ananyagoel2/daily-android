@@ -41,15 +41,34 @@ public class RegEmailFragment extends BaseFragment {
         return f;
     }
 
+    public boolean validateFields(){
+
+        boolean ok = true;
+        String email = this.email.getText().toString().trim();
+        if( email.equals("") ) {
+            this.email.setError("Email cannot be empty");
+            ok = false;
+        }
+        String pattern = "[a-zA-Z0-9._-]+@[a-z]+.[a-z]+";
+        if( !email.matches(pattern) ){
+            this.email.setError("Email not valid".intern());
+            ok = false;
+        }
+        return ok;
+    }
     public boolean submit() {
 
-        String email = this.email.getText().toString();
+        if(validateFields()) {
 
-        // send to server
+            String email = this.email.getText().toString();
 
-        userModel.setEmail(email);
-        UserModel.saveUser(sharedPreferences,userModel);
-        return true;
+            // send to server
+
+            userModel.setEmail(email);
+            UserModel.saveUser(sharedPreferences, userModel);
+            return true;
+        }
+        return false;
 
     }
 
