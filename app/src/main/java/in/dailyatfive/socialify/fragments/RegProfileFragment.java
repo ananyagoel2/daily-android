@@ -56,17 +56,39 @@ public class RegProfileFragment extends BaseFragment {
         return f;
     }
 
-    public boolean submit() {
+    public boolean validateFields(){
 
+        boolean ok = true;
         String first_name = this.first_name.getText().toString();
         String last_name = this.last_name.getText().toString();
 
-        userModel.setFirst_name(first_name);
-        userModel.setLast_name(last_name);
+        if( first_name.equals("") ) {
+            this.first_name.setError("Firstname cannot be empty");
+            ok = false;
+        }
+        if( last_name.equals("") ) {
+            this.last_name.setError("Lastname cannot be empty");
+            ok = false;
+        }
+        return ok;
+    }
 
-        UserModel.saveUser(sharedPreferences,userModel);
+    public boolean submit() {
 
-        return true;
+        if(validateFields()){
+
+            String first_name = this.first_name.getText().toString();
+            String last_name = this.last_name.getText().toString();
+
+            userModel.setFirst_name(first_name);
+            userModel.setLast_name(last_name);
+
+            UserModel.saveUser(sharedPreferences,userModel);
+
+            return true;
+
+        }
+        return false;
 
     }
 
