@@ -16,6 +16,7 @@ import in.dailyatfive.socialify.models.UserModel;
 
 public class RegEmailFragment extends BaseFragment {
 
+    private EditText email;
 
     public RegEmailFragment() {
         // Required empty public constructor
@@ -27,7 +28,7 @@ public class RegEmailFragment extends BaseFragment {
 
         View view = inflater.inflate(R.layout.fragment_reg_email, container, false);
 
-        EditText email = (EditText) view.findViewById(R.id.email_editbox);
+        email = (EditText) view.findViewById(R.id.email_editbox);
         email.setText(getArguments().getString("email"));
         return view;
     }
@@ -38,6 +39,18 @@ public class RegEmailFragment extends BaseFragment {
         b.putString("email", userModel.getEmail());
         f.setArguments(b);
         return f;
+    }
+
+    public boolean submit() {
+
+        String email = this.email.getText().toString();
+
+        // send to server
+
+        userModel.setEmail(email);
+        UserModel.saveUser(sharedPreferences,userModel);
+        return true;
+
     }
 
 }
