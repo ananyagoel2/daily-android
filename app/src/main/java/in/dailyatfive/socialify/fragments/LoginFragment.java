@@ -1,12 +1,9 @@
 package in.dailyatfive.socialify.fragments;
 
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +15,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -33,6 +31,7 @@ public class LoginFragment extends BaseFragment {
 
     private LoginButton loginButton;
     private CallbackManager callbackManager;
+    private ProfileTracker profileTracker;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,32 +70,62 @@ public class LoginFragment extends BaseFragment {
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Toast.makeText(getActivity(), "Login Successfull" , Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), "Login Successfull" , Toast.LENGTH_LONG).show();
 
                 UserModel.clearUser(sharedPreferences);
+                userModel = new UserModel();
 
-                Profile profile = Profile.getCurrentProfile();
-                UserModel userModel = new UserModel();
+                if(Profile.getCurrentProfile() != null) {
 
-                while(profile==null);
+                    Profile newProfile = Profile.getCurrentProfile();
 
-                userModel.setFb_id(profile.getId());
-                userModel.setFb_token(AccessToken.getCurrentAccessToken().toString());
+                    userModel.setFb_id(newProfile.getId());
+                    userModel.setFb_token(AccessToken.getCurrentAccessToken().toString());
 
-                userModel.setFirst_name(profile.getFirstName());
-                userModel.setLast_name(profile.getLastName());
-                userModel.setProfile_picture_link(profile.getProfilePictureUri(100,100).toString());
+                    userModel.setFirst_name(newProfile.getFirstName());
+                    userModel.setLast_name(newProfile.getLastName());
+                    userModel.setProfile_picture_link(newProfile.getProfilePictureUri(100,100).toString());
 
-                userModel.setEmail("");
-                userModel.setGender("");
-                userModel.setMobile("");
-                userModel.setAdmin(false);
+                    userModel.setEmail("");
+                    userModel.setGender("");
+                    userModel.setMobile("");
+                    userModel.setAdmin(false);
 
-                UserModel.saveUser(sharedPreferences,userModel);
+                    UserModel.saveUser(sharedPreferences,userModel);
 
-                Intent intent = new Intent(getActivity().getApplicationContext(),MainActivity.class);
-                startActivity(intent);
-                getActivity().finish();
+                    Intent intent = new Intent(getActivity().getApplicationContext(),MainActivity.class);
+                    startActivity(intent);
+                    getActivity().finish();
+
+                } else {
+
+                    profileTracker = new ProfileTracker() {
+                        @Override
+                        protected void onCurrentProfileChanged(Profile currentProfile, Profile newProfile) {
+
+                            profileTracker.stopTracking();
+
+                            userModel.setFb_id(newProfile.getId());
+                            userModel.setFb_token(AccessToken.getCurrentAccessToken().toString());
+
+                            userModel.setFirst_name(newProfile.getFirstName());
+                            userModel.setLast_name(newProfile.getLastName());
+                            userModel.setProfile_picture_link(newProfile.getProfilePictureUri(100, 100).toString());
+
+                            userModel.setEmail("");
+                            userModel.setGender("");
+                            userModel.setMobile("");
+                            userModel.setAdmin(false);
+
+                            UserModel.saveUser(sharedPreferences, userModel);
+
+                            Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                            getActivity().finish();
+
+                        }
+                    };
+                }
             }
 
             @Override
