@@ -1,33 +1,27 @@
 package in.dailyatfive.socialify;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import in.dailyatfive.socialify.adapters.SplashSlideshowAdapter;
-import in.dailyatfive.socialify.models.UserModel;
+import in.dailyatfive.socialify.helper.SessionHelper;
 
 public class SplashActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
 
     private ViewPager splashPager;
-    private FragmentManager fragmentManager;
 
     private static int NUM_PAGES = 4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(UserModel.isLoggedIn(sharedPreferences)) {
+        if(SessionHelper.isLoggedIn(sharedPreferences)) {
             Intent intent = new Intent(SplashActivity.this,MainActivity.class);
             startActivity(intent);
             finish();
         }
-
-        fragmentManager = getSupportFragmentManager();
 
         setContentView(R.layout.activity_splash);
 

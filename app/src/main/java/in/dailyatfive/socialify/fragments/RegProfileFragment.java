@@ -8,19 +8,24 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.facebook.Profile;
 import com.squareup.picasso.Picasso;
 
 import in.dailyatfive.socialify.R;
-import in.dailyatfive.socialify.models.UserModel;
+import in.dailyatfive.socialify.helper.SessionHelper;
+import in.dailyatfive.socialify.network.models.User;
 
 public class RegProfileFragment extends BaseFragment {
 
     private ImageView profile_picture;
-    private EditText first_name;
-    private EditText last_name;
+    private EditText first_name_edittext;
+    private EditText last_name_edittext;
+    private String first_name;
+    private String last_name;
+    private User user;
 
     public RegProfileFragment() {
-        // Required empty public constructor
+
     }
 
 
@@ -28,15 +33,19 @@ public class RegProfileFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_reg_profile, container, false);
+        user = SessionHelper.getUser(sharedPreferences);
+
+        first_name = user.getFirstName();
+        last_name = user.getLastName();
 
         profile_picture = (ImageView) view.findViewById(R.id.profile_pic);
-        first_name = (EditText) view.findViewById(R.id.first_name_editbox);
-        last_name = (EditText) view.findViewById(R.id.last_name_editbox);
+        first_name_edittext = (EditText) view.findViewById(R.id.first_name_editbox);
+        last_name_edittext = (EditText) view.findViewById(R.id.last_name_editbox);
 
-        first_name.setText(getArguments().getString("first_name"));
-        last_name.setText(getArguments().getString("last_name"));
+        first_name_edittext.setText(first_name);
+        last_name_edittext.setText(last_name);
 
-        String image_link = getArguments().getString("profile_picture_link");
+        String image_link = Profile.getCurrentProfile().getProfilePictureUri(100,100).toString();
 
         if(image_link != null && !image_link.equals(""))
             Picasso.with(getActivity())
@@ -46,28 +55,18 @@ public class RegProfileFragment extends BaseFragment {
         return view;
     }
 
-    public static RegProfileFragment newInstance(UserModel userModel) {
-        RegProfileFragment f = new RegProfileFragment();
-        Bundle b = new Bundle();
-        b.putString("first_name", userModel.getFirst_name());
-        b.putString("last_name", userModel.getLast_name());
-        b.putString("profile_picture_link", userModel.getProfile_picture_link());
-        f.setArguments(b);
-        return f;
-    }
-
     public boolean validateFields(){
 
         boolean ok = true;
-        String first_name = this.first_name.getText().toString();
-        String last_name = this.last_name.getText().toString();
+        String first_name = this.first_name_edittext.getText().toString().trim();
+        String last_name = this.last_name_edittext.getText().toString().trim();
 
         if( first_name.equals("") ) {
-            this.first_name.setError("Firstname cannot be empty");
+            this.first_name_edittext.setError("First name cannot be empty");
             ok = false;
         }
         if( last_name.equals("") ) {
-            this.last_name.setError("Lastname cannot be empty");
+            this.last_name_edittext.setError("Last name cannot be empty");
             ok = false;
         }
         return ok;
@@ -77,13 +76,13 @@ public class RegProfileFragment extends BaseFragment {
 
         if(validateFields()){
 
-            String first_name = this.first_name.getText().toString();
-            String last_name = this.last_name.getText().toString();
+            first_name = this.first_name_edittext.getText().toString().trim();
+            last_name = this.last_name_edittext.getText().toString().trim();
 
-            userModel.setFirst_name(first_name);
-            userModel.setLast_name(last_name);
+            user.setFirstName(first_name);
+            user.setLastName(last_name);
 
-            UserModel.saveUser(sharedPreferences,userModel);
+            SessionHelper.saveUser(sharedPreferences,user);
 
             return true;
 

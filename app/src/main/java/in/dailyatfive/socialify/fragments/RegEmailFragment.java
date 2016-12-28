@@ -2,56 +2,48 @@ package in.dailyatfive.socialify.fragments;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
-
-import com.squareup.picasso.Picasso;
 
 import in.dailyatfive.socialify.R;
-import in.dailyatfive.socialify.models.UserModel;
+import in.dailyatfive.socialify.helper.SessionHelper;
+import in.dailyatfive.socialify.network.models.User;
 
 public class RegEmailFragment extends BaseFragment {
 
-    private EditText email;
+    private EditText email_edittext;
+    private String email;
+    private User user;
 
     public RegEmailFragment() {
-        // Required empty public constructor
+
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_reg_email, container, false);
+        user = SessionHelper.getUser(sharedPreferences);
 
-        email = (EditText) view.findViewById(R.id.email_editbox);
-        email.setText(getArguments().getString("email"));
+        email = user.getEmail();
+
+        email_edittext = (EditText) view.findViewById(R.id.email_editbox);
+        email_edittext.setText(email);
         return view;
-    }
-
-    public static RegEmailFragment newInstance(UserModel userModel) {
-        RegEmailFragment f = new RegEmailFragment();
-        Bundle b = new Bundle();
-        b.putString("email", userModel.getEmail());
-        f.setArguments(b);
-        return f;
     }
 
     public boolean validateFields(){
 
         boolean ok = true;
-        String email = this.email.getText().toString().trim();
-        if( email.equals("") ) {
-            this.email.setError("Email cannot be empty");
-            ok = false;
-        }
+        String email = this.email_edittext.getText().toString().trim();
         String pattern = "[a-zA-Z0-9._-]+@[a-z]+.[a-z]+";
-        if( !email.matches(pattern) ){
-            this.email.setError("Email not valid".intern());
+        if( email.equals("") ) {
+            this.email_edittext.setError("Email cannot be empty");
+            ok = false;
+        } else if( !email.matches(pattern) ){
+            this.email_edittext.setError("Email not valid");
             ok = false;
         }
         return ok;
@@ -60,12 +52,12 @@ public class RegEmailFragment extends BaseFragment {
 
         if(validateFields()) {
 
-            String email = this.email.getText().toString();
+            email = this.email_edittext.getText().toString().trim();
 
             // send to server
 
-            userModel.setEmail(email);
-            UserModel.saveUser(sharedPreferences, userModel);
+            user.setEmail(email);
+            SessionHelper.saveUser(sharedPreferences, user);
             return true;
         }
         return false;

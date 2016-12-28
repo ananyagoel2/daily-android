@@ -28,7 +28,7 @@ public class RegisterActivity extends BaseActivity implements ViewPager.OnPageCh
 
         registerPager = (NonSwipableViewPager) findViewById(R.id.registration_pager);
 
-        final RegistrationAdapter registrationAdapter = new RegistrationAdapter(getSupportFragmentManager(),userModel);
+        final RegistrationAdapter registrationAdapter = new RegistrationAdapter(getSupportFragmentManager());
         registerPageCount = registrationAdapter.getCount();
 
         prevButton = (Button) findViewById(R.id.prev_button);
