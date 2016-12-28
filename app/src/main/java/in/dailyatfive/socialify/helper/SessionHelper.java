@@ -13,7 +13,7 @@ public class SessionHelper {
         Gson gson = new Gson();
         String json = gson.toJson(user);
         prefsEditor.putString("CurrentUser", json);
-        prefsEditor.commit();
+        prefsEditor.apply();
     }
 
     public static User getUser(SharedPreferences sharedPreferences) {
@@ -33,6 +33,7 @@ public class SessionHelper {
     public static void setJwtToken(SharedPreferences sharedPreferences,String jwtToken){
         SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
         prefsEditor.putString("JWT", jwtToken);
+        prefsEditor.apply();
     }
 
     public static String getJwtToken(SharedPreferences sharedPreferences){
