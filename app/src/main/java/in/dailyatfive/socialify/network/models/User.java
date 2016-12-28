@@ -55,6 +55,18 @@ public class User {
     @Expose
     private Boolean admin;
 
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    @SerializedName("birthday")
+    @Expose
+    private String birthday;
+
     public String getId() {
         return id;
     }
