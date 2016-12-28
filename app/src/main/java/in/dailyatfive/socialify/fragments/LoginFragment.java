@@ -14,17 +14,30 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Arrays;
 
 import in.dailyatfive.socialify.MainActivity;
 import in.dailyatfive.socialify.R;
-import in.dailyatfive.socialify.models.UserModel;
+import in.dailyatfive.socialify.helper.SessionHelper;
+import in.dailyatfive.socialify.network.API;
+import in.dailyatfive.socialify.network.models.Register;
+import in.dailyatfive.socialify.network.models.User;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginFragment extends BaseFragment {
 
@@ -72,30 +85,22 @@ public class LoginFragment extends BaseFragment {
             public void onSuccess(LoginResult loginResult) {
                 Toast.makeText(getActivity().getApplicationContext(), "Login Successfull" , Toast.LENGTH_LONG).show();
 
-                UserModel.clearUser(sharedPreferences);
-                userModel = new UserModel();
+                SessionHelper.clearUser(sharedPreferences);
 
                 if(Profile.getCurrentProfile() != null) {
 
                     Profile newProfile = Profile.getCurrentProfile();
 
-                    userModel.setFb_id(newProfile.getId());
-                    userModel.setFb_token(AccessToken.getCurrentAccessToken().toString());
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl(API.BASEURL)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
 
-                    userModel.setFirst_name(newProfile.getFirstName());
-                    userModel.setLast_name(newProfile.getLastName());
-                    userModel.setProfile_picture_link(newProfile.getProfilePictureUri(100,100).toString());
+                    API api = retrofit.create(API.class);
+                    retrofit2.Call<Register> registerResponseCall = api.registerUser(
+                            newProfile.getId(),AccessToken.getCurrentAccessToken().getToken().toString());
 
-                    userModel.setEmail("");
-                    userModel.setGender("");
-                    userModel.setMobile("");
-                    userModel.setAdmin(false);
-
-                    UserModel.saveUser(sharedPreferences,userModel);
-
-                    Intent intent = new Intent(getActivity().getApplicationContext(),MainActivity.class);
-                    startActivity(intent);
-                    getActivity().finish();
+                    registerResponseCall.enqueue(callback);
 
                 } else {
 
@@ -105,23 +110,16 @@ public class LoginFragment extends BaseFragment {
 
                             profileTracker.stopTracking();
 
-                            userModel.setFb_id(newProfile.getId());
-                            userModel.setFb_token(AccessToken.getCurrentAccessToken().toString());
+                            Retrofit retrofit = new Retrofit.Builder()
+                                    .baseUrl(API.BASEURL)
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build();
 
-                            userModel.setFirst_name(newProfile.getFirstName());
-                            userModel.setLast_name(newProfile.getLastName());
-                            userModel.setProfile_picture_link(newProfile.getProfilePictureUri(100, 100).toString());
+                            API api = retrofit.create(API.class);
+                            retrofit2.Call<Register> registerResponseCall = api.registerUser(
+                                    newProfile.getId(),AccessToken.getCurrentAccessToken().getToken().toString());
 
-                            userModel.setEmail("");
-                            userModel.setGender("");
-                            userModel.setMobile("");
-                            userModel.setAdmin(false);
-
-                            UserModel.saveUser(sharedPreferences, userModel);
-
-                            Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
-                            startActivity(intent);
-                            getActivity().finish();
+                            registerResponseCall.enqueue(callback);
 
                         }
                     };
@@ -147,5 +145,61 @@ public class LoginFragment extends BaseFragment {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    private Callback callback = new Callback<Register>() {
+
+        @Override
+        public void onResponse(Call<Register> call, Response<Register> response) {
+            int code = response.code();
+            if(code == 200){
+
+                Register register = response.body();
+                final User user = register.getUser();
+
+                Profile profile = Profile.getCurrentProfile();
+
+                if(user.getIsNewUser() && profile != null) {
+                    user.setFirstName(profile.getFirstName());
+                    user.setLastName(profile.getLastName());
+
+                    GraphRequest request = GraphRequest.newMeRequest(
+                            AccessToken.getCurrentAccessToken(),
+                            new GraphRequest.GraphJSONObjectCallback() {
+                                @Override
+                                public void onCompleted(JSONObject object, GraphResponse response) {
+
+                                    try {
+                                        user.setEmail(object.getString("email"));
+                                        user.setGender(object.getString("gender"));
+                                        user.setBirthday(object.getString("birthday"));
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    SessionHelper.saveUser(sharedPreferences, user);
+
+                                    Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
+                                    startActivity(intent);
+                                    getActivity().finish();
+
+                                }
+                            });
+                    Bundle parameters = new Bundle();
+                    parameters.putString("fields", "email,gender,birthday");
+                    request.setParameters(parameters);
+                    request.executeAsync();
+                }
+
+
+            } else {
+                Toast.makeText(getActivity(), "Error " + code , Toast.LENGTH_LONG).show();
+            }
+
+        }
+
+        @Override
+        public void onFailure(Call<Register> call, Throwable t) {
+            Toast.makeText(getActivity(), "Error : Something went wrong" , Toast.LENGTH_LONG).show();
+        }
+    };
 
 }
