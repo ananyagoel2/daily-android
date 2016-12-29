@@ -1,14 +1,25 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/tools">
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+    </style>
+
+    <style name="AppEditText">
+        <item name="android:padding">10dp</item>
+        <item name="android:background">@drawable/edittext_background</item>
+    </style>
+    <style name="AppEditTextThickBorder">
+        <item name="android:padding">10dp</item>
+        <item name="android:background">@drawable/edittext_background_thick</item>
+    </style>
+    <style name="AppEditTextContainer">
+        <item name="android:padding">0.5dp</item>
+        <item name="android:background">@drawable/edittext_background</item>
     </style>
 
 </resources>

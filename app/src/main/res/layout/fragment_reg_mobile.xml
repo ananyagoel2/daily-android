@@ -23,6 +23,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/mobile_editbox"
+                    style="@style/AppEditText"
                     android:hint="Mobile Number"/>
 
                 <LinearLayout
@@ -36,6 +37,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/otp_editbox"
+                        style="@style/AppEditTextThickBorder"
                         android:hint="Enter OTP"/>
 
                     <TextView
