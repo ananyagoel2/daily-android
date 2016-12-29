@@ -13,7 +13,7 @@ import in.dailyatfive.socialify.fragments.RegEmailFragment;
 import in.dailyatfive.socialify.fragments.RegMobileFragment;
 import in.dailyatfive.socialify.fragments.RegProfileFragment;
 
-public class RegisterActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
+public class RegisterActivity extends BaseActivity implements ViewPager.OnPageChangeListener,RegEmailFragment.RegCallback {
 
     private NonSwipableViewPager registerPager;
     private int registerPageCount;
@@ -50,15 +50,13 @@ public class RegisterActivity extends BaseActivity implements ViewPager.OnPageCh
             @Override
             public void onClick(View v) {
                 int currentPosition = registerPager.getCurrentItem();
-                boolean goNext = false;
-                switch(currentPosition)
-                {
-                    case 0: goNext = ((RegProfileFragment) registerPager.getAdapter().instantiateItem(registerPager,0)).submit(); break;
-                    case 1: goNext = ((RegEmailFragment) registerPager.getAdapter().instantiateItem(registerPager,1)).submit(); break;
-                    case 2: goNext = ((RegMobileFragment) registerPager.getAdapter().instantiateItem(registerPager,2)).submit(); break;
-                }
-                if(goNext && currentPosition < registerPageCount) {
-                    registerPager.setCurrentItem(registerPager.getCurrentItem() + 1, true);
+                Object fragment = registrationAdapter.instantiateItem(registerPager,currentPosition);
+                if( fragment instanceof RegProfileFragment) {
+                    ((RegProfileFragment) fragment).submit();
+                } else if( fragment instanceof RegEmailFragment) {
+                    ((RegEmailFragment) fragment).submit();
+                } else if( fragment instanceof RegMobileFragment) {
+                    ((RegMobileFragment) fragment).submit();
                 }
             }
         });
@@ -87,5 +85,10 @@ public class RegisterActivity extends BaseActivity implements ViewPager.OnPageCh
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Override
+    public void goToNextPage() {
+        registerPager.setCurrentItem(registerPager.getCurrentItem()+1,true);
     }
 }
