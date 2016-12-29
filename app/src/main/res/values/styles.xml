@@ -12,6 +12,7 @@
     <style name="AppEditText">
         <item name="android:padding">10dp</item>
         <item name="android:background">@drawable/edittext_background</item>
+        <item name="android:layout_margin">8dp</item>
     </style>
     <style name="AppEditTextThickBorder">
         <item name="android:padding">10dp</item>
@@ -19,7 +20,7 @@
     </style>
     <style name="AppEditTextContainer">
         <item name="android:padding">0.5dp</item>
-        <item name="android:background">@drawable/edittext_background</item>
+        <!--<item name="android:background">@drawable/edittext_background</item>-->
     </style>
 
 </resources>
