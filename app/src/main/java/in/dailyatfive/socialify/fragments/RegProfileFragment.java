@@ -15,7 +15,7 @@ import in.dailyatfive.socialify.R;
 import in.dailyatfive.socialify.helper.SessionHelper;
 import in.dailyatfive.socialify.network.models.User;
 
-public class RegProfileFragment extends BaseFragment {
+public class RegProfileFragment extends RegCallbackBaseFragment {
 
     private ImageView profile_picture;
     private EditText first_name_edittext;
@@ -58,36 +58,35 @@ public class RegProfileFragment extends BaseFragment {
     public boolean validateFields(){
 
         boolean ok = true;
-        String first_name = this.first_name_edittext.getText().toString().trim();
-        String last_name = this.last_name_edittext.getText().toString().trim();
+        String first_name = first_name_edittext.getText().toString().trim();
+        String last_name = last_name_edittext.getText().toString().trim();
 
         if( first_name.equals("") ) {
-            this.first_name_edittext.setError("First name cannot be empty");
+            first_name_edittext.setError("First name cannot be empty");
             ok = false;
         }
         if( last_name.equals("") ) {
-            this.last_name_edittext.setError("Last name cannot be empty");
+            last_name_edittext.setError("Last name cannot be empty");
             ok = false;
         }
         return ok;
     }
 
-    public boolean submit() {
+    public void submit() {
 
         if(validateFields()){
 
-            first_name = this.first_name_edittext.getText().toString().trim();
-            last_name = this.last_name_edittext.getText().toString().trim();
+            first_name = first_name_edittext.getText().toString().trim();
+            last_name = last_name_edittext.getText().toString().trim();
 
             user.setFirstName(first_name);
             user.setLastName(last_name);
 
             SessionHelper.saveUser(sharedPreferences,user);
 
-            return true;
+            mCallback.goToNextPage();
 
         }
-        return false;
 
     }
 

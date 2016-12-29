@@ -6,12 +6,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import java.util.HashMap;
 
 import in.dailyatfive.socialify.R;
 import in.dailyatfive.socialify.helper.SessionHelper;
+import in.dailyatfive.socialify.network.API;
 import in.dailyatfive.socialify.network.models.User;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RegEmailFragment extends BaseFragment {
+public class RegEmailFragment extends RegCallbackBaseFragment {
 
     private EditText email_edittext;
     private String email;
@@ -20,7 +29,6 @@ public class RegEmailFragment extends BaseFragment {
     public RegEmailFragment() {
 
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,20 +56,52 @@ public class RegEmailFragment extends BaseFragment {
         }
         return ok;
     }
-    public boolean submit() {
+
+    public void submit() {
 
         if(validateFields()) {
 
             email = this.email_edittext.getText().toString().trim();
 
-            // send to server
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(API.BASEURL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
-            user.setEmail(email);
-            SessionHelper.saveUser(sharedPreferences, user);
-            return true;
+            API api = retrofit.create(API.class);
+
+            HashMap<String,String> params = new HashMap<>();
+            params.put("first_name",user.getFirstName());
+            params.put("last_name",user.getLastName());
+            params.put("email",user.getEmail());
+
+            retrofit2.Call<Void> updateUserCall = api.updateUser(params,user.getId(),"JWT "+SessionHelper.getJwtToken(sharedPreferences));
+
+            updateUserCall.enqueue(callback);
+
         }
-        return false;
 
     }
+
+    private Callback<Void> callback = new Callback<Void>() {
+        @Override
+        public void onResponse(Call<Void> call, Response<Void> response) {
+            int code = response.code();
+            if (code == 200) {
+                user.setEmail(email);
+                SessionHelper.saveUser(sharedPreferences, user);
+                mCallback.goToNextPage();
+            } else if( code == 400 ) {
+                email_edittext.setError("This email is already registered with another account.");
+            } else {
+                Toast.makeText(getActivity(), "Error " + code, Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        public void onFailure(Call<Void> call, Throwable t) {
+            Toast.makeText(getActivity(), "Error : Something Went Wrong ..", Toast.LENGTH_LONG).show();
+        }
+    };
 
 }

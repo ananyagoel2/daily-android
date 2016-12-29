@@ -14,7 +14,7 @@ import in.dailyatfive.socialify.R;
 import in.dailyatfive.socialify.helper.SessionHelper;
 import in.dailyatfive.socialify.network.models.User;
 
-public class RegMobileFragment extends BaseFragment {
+public class RegMobileFragment extends RegCallbackBaseFragment {
 
     private EditText mobile_edittext;
     private String mobile;
@@ -66,7 +66,7 @@ public class RegMobileFragment extends BaseFragment {
         }.start();
     }
 
-    public boolean submit() {
+    public void submit() {
 
         if (otp_box.getVisibility() != View.VISIBLE) {
             sendOtp(mobile_edittext.getText().toString());
@@ -82,6 +82,5 @@ public class RegMobileFragment extends BaseFragment {
 
             SessionHelper.saveUser(sharedPreferences, user);
         }
-        return true;
     }
 }
