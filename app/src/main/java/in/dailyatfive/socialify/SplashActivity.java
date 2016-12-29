@@ -7,6 +7,9 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
 import in.dailyatfive.socialify.adapters.SplashSlideshowAdapter;
 import in.dailyatfive.socialify.fragments.SplashSlideshowFragment;
 import in.dailyatfive.socialify.helper.SessionHelper;
@@ -26,6 +29,8 @@ public class SplashActivity extends BaseActivity implements ViewPager.OnPageChan
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(SplashActivity.this);
+        AppEventsLogger.activateApp(SplashActivity.this);
 
         if(SessionHelper.isLoggedIn(sharedPreferences)) {
 
