@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.squareup.picasso.Picasso;
 
@@ -28,8 +29,14 @@ public class RegProfileFragment extends RegCallbackBaseFragment {
 
     }
 
-
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+    }
+
+
+        @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_reg_profile, container, false);
