@@ -1,10 +1,16 @@
 package in.dailyatfive.socialify.network;
 
+import java.util.Map;
+
 import in.dailyatfive.socialify.network.models.Register;
 import retrofit2.Call;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 public interface API {
 
@@ -15,5 +21,11 @@ public interface API {
     Call<Register> registerUser(@Field("facebook_id") String fb_id,
                                 @Field("access_token") String access_token);
 
+
+    @FormUrlEncoded
+    @PUT("/users/{user_id}")
+    Call<Void> updateUser(@FieldMap Map<String,String> parameters,
+                          @Path("user_id") String user_id ,
+                          @Header("Authorization") String authorization);
 
 }
