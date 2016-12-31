@@ -37,6 +37,7 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
                         android:id="@+id/first_name_editbox"
                         style="@style/AppEditText"
                         android:hint="First Name"/>
@@ -44,6 +45,7 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
                         android:id="@+id/last_name_editbox"
                         style="@style/AppEditText"
                         android:hint="Last Name"/>

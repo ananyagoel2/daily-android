@@ -23,6 +23,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/mobile_editbox"
+                    android:inputType="phone"
+                    android:maxLength="10"
                     style="@style/AppEditText"
                     android:hint="Mobile Number"/>
 
@@ -37,7 +39,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/otp_editbox"
-                        style="@style/AppEditTextThickBorder"
+                        style="@style/AppEditText"
+                        android:inputType="number"
+                        android:maxLength="6"
                         android:hint="Enter OTP"/>
 
                     <TextView
