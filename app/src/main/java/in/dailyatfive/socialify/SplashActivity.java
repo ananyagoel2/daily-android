@@ -34,6 +34,12 @@ public class SplashActivity extends BaseActivity implements ViewPager.OnPageChan
 
         if(SessionHelper.isLoggedIn(sharedPreferences)) {
 
+            setContentView(R.layout.activity_splash_static);
+
+            FragmentManager fm = getSupportFragmentManager();
+            SplashSlideshowFragment fragment = SplashSlideshowFragment.newInstance(R.drawable.splash_slide_1);
+            fm.beginTransaction().add(R.id.activity_splash_static, fragment ).commit();
+
             User user = SessionHelper.getUser(sharedPreferences);
 
             Retrofit retrofit = new Retrofit.Builder()
@@ -46,11 +52,6 @@ public class SplashActivity extends BaseActivity implements ViewPager.OnPageChan
                     user.getId(),"JWT "+SessionHelper.getJwtToken(sharedPreferences));
 
             getUserCall.enqueue(callback);
-            setContentView(R.layout.activity_splash_static);
-
-            FragmentManager fm = getSupportFragmentManager();
-            SplashSlideshowFragment fragment = SplashSlideshowFragment.newInstance(R.drawable.splash_slide_1);
-            fm.beginTransaction().add(R.id.activity_splash_static, fragment ).commit();
 
         } else {
 
