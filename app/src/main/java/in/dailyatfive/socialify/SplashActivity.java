@@ -113,7 +113,7 @@ public class SplashActivity extends BaseActivity implements ViewPager.OnPageChan
 
     @Override
     public void onBackPressed() {
-        if (splashPager.getCurrentItem() == 0) {
+        if (splashPager == null || splashPager.getCurrentItem() == 0) {
             super.onBackPressed();
         } else {
             splashPager.setCurrentItem(splashPager.getCurrentItem() - 1);
