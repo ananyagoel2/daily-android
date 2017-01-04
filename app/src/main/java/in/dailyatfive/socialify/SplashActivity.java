@@ -14,7 +14,10 @@ import in.dailyatfive.socialify.adapters.SplashSlideshowAdapter;
 import in.dailyatfive.socialify.fragments.SplashSlideshowFragment;
 import in.dailyatfive.socialify.helper.SessionHelper;
 import in.dailyatfive.socialify.network.API;
+import in.dailyatfive.socialify.network.models.Register;
 import in.dailyatfive.socialify.network.models.User;
+import in.dailyatfive.socialify.ui.UpdateActivity;
+import in.dailyatfive.socialify.utils.Constants;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,8 +51,7 @@ public class SplashActivity extends BaseActivity implements ViewPager.OnPageChan
                     .build();
 
             API api = retrofit.create(API.class);
-            retrofit2.Call<User> getUserCall = api.getUser(
-                    user.getId(),"JWT "+SessionHelper.getJwtToken(sharedPreferences));
+            retrofit2.Call<Register> getUserCall = api.registerUser(user.getFacebookId(),user.getFacebook().getToken());
 
             getUserCall.enqueue(callback);
 
@@ -70,16 +72,29 @@ public class SplashActivity extends BaseActivity implements ViewPager.OnPageChan
 
     }
 
-    private Callback<User> callback = new Callback<User>() {
+    private Callback<Register> callback = new Callback<Register>() {
         @Override
-        public void onResponse(Call<User> call, Response<User> response) {
+        public void onResponse(Call<Register> call, Response<Register> response) {
             int code = response.code();
             if(code == 200) {
-                User user = response.body();
-                SessionHelper.saveUser(sharedPreferences,user);
-                Intent intent = new Intent(SplashActivity.this,MainActivity.class);
-                startActivity(intent);
-                finish();
+                Register register = response.body();
+
+                // Check version
+                if(Integer.parseInt(register.getMinVersionCode()) > Constants.API_VERSION_CODE ) {
+                    Intent intent = new Intent(SplashActivity.this, UpdateActivity.class);
+                    intent.putExtra("force",true);
+                    startActivity(intent);
+                    finish();
+                } else if (Integer.parseInt(register.getCurrentVersionCode()) > Constants.API_VERSION_CODE ) {
+                    Intent intent = new Intent(SplashActivity.this, UpdateActivity.class);
+                    startActivity(intent);
+                } else {
+                    User user = register.getUser();
+                    SessionHelper.saveUser(sharedPreferences, user);
+                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
             } else if (code == 401) {
                 SessionHelper.clearUser(sharedPreferences);
                 Intent intent = new Intent(SplashActivity.this,SplashActivity.class);
@@ -91,7 +106,7 @@ public class SplashActivity extends BaseActivity implements ViewPager.OnPageChan
         }
 
         @Override
-        public void onFailure(Call<User> call, Throwable t) {
+        public void onFailure(Call<Register> call, Throwable t) {
             Toast.makeText(SplashActivity.this," Error : Something went wrong ..! ",Toast.LENGTH_SHORT).show();
         }
     };
