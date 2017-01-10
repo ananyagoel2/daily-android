@@ -24,6 +24,9 @@ import in.chefsway.chefsway.helper.SessionHelper;
 import in.chefsway.chefsway.network.models.User;
 import in.chefsway.chefsway.ui.ProfileActivity;
 import in.chefsway.chefsway.ui.RegisterActivity;
+import it.neokree.materialtabs.MaterialTab;
+import it.neokree.materialtabs.MaterialTabHost;
+import it.neokree.materialtabs.MaterialTabListener;
 
 public class MainActivity extends BaseActivity {
 
@@ -82,6 +85,27 @@ public class MainActivity extends BaseActivity {
         if (actionBar != null) {
             actionBar.setHomeAsUpIndicator(drawerArrow);
         }
+
+        final MaterialTabHost materialTabHost = (MaterialTabHost) findViewById(R.id.materialTabHost);
+
+        MaterialTabListener listener = new MaterialTabListener() {
+            @Override
+            public void onTabSelected(MaterialTab tab) {
+                materialTabHost.setSelectedNavigationItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabReselected(MaterialTab tab) {
+            }
+
+            @Override
+            public void onTabUnselected(MaterialTab tab) {
+
+            }
+        };
+
+        materialTabHost.addTab(materialTabHost.newTab().setText("Recipe").setTabListener(listener));
+        materialTabHost.addTab(materialTabHost.newTab().setText("Shop").setTabListener(listener));
 
     }
 
