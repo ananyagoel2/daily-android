@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="in.dailyatfive.socialify.fragments.RegMobileFragment">
+    tools:context="in.chefsway.chefsway.fragments.RegMobileFragment">
 
     <ScrollView
         android:layout_width="match_parent"

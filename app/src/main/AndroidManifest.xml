@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="in.dailyatfive.socialify">
+    package="in.chefsway.chefsway">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -35,7 +35,8 @@
 
         <!-- Facebook Login end -->
 
-        <activity android:name=".SplashActivity"
+        <activity
+            android:name="in.chefsway.chefsway.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,8 +44,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".ui.RegisterActivity"></activity>
+        <activity android:name="in.chefsway.chefsway.MainActivity" />
+        <activity android:name="in.chefsway.chefsway.ui.RegisterActivity" />
+        <activity android:name="in.chefsway.chefsway.ui.ProfileActivity" />
+        <activity android:name="in.chefsway.chefsway.ui.UpdateActivity"></activity>
     </application>
 
 </manifest>

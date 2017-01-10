@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="2"
-    tools:context="in.dailyatfive.socialify.ui.UpdateActivity">
+    tools:context="in.chefsway.chefsway.ui.UpdateActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

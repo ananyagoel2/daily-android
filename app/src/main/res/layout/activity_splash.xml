@@ -3,7 +3,7 @@
     android:id="@+id/activity_splash"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.dailyatfive.socialify.SplashActivity">
+    tools:context="in.chefsway.chefsway.SplashActivity">
 
     <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/splash_pager"
@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="20dp"
-        android:name="in.dailyatfive.socialify.fragments.LoginFragment"
+        android:name="in.chefsway.chefsway.fragments.LoginFragment"
         tools:layout="@layout/fragment_login">
 
     </fragment>

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.dailyatfive.socialify.ui.RegisterActivity">
+    tools:context="in.chefsway.chefsway.ui.RegisterActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -21,12 +21,12 @@
         android:paddingLeft="@dimen/activity_vertical_margin"
         android:paddingRight="@dimen/activity_vertical_margin">
 
-        <in.dailyatfive.socialify.custom.NonSwipableViewPager
+        <in.chefsway.chefsway.custom.NonSwipableViewPager
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/registration_pager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        </in.dailyatfive.socialify.custom.NonSwipableViewPager>
+        </in.chefsway.chefsway.custom.NonSwipableViewPager>
 
         <LinearLayout
             android:layout_width="match_parent"

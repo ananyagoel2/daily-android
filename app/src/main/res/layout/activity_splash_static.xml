@@ -3,7 +3,7 @@
     android:id="@+id/activity_splash_static"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.dailyatfive.socialify.SplashActivity">
+    tools:context="in.chefsway.chefsway.SplashActivity">
 
 
 </RelativeLayout>
