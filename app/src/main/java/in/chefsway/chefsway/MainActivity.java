@@ -12,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.facebook.Profile;
@@ -26,7 +28,7 @@ import in.chefsway.chefsway.ui.RegisterActivity;
 public class MainActivity extends BaseActivity {
 
     private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
+    private LinearLayout navigationView;
     private ActionBarDrawerToggle drawerToggle;
     private DrawerArrowDrawable drawerArrow;
 
@@ -54,7 +56,7 @@ public class MainActivity extends BaseActivity {
         }
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.design_navigation_view);
+        navigationView = (LinearLayout) findViewById(R.id.navigation_drawer);
 
         drawerArrow = new DrawerArrowDrawable(this) {
             @Override
@@ -81,24 +83,6 @@ public class MainActivity extends BaseActivity {
             actionBar.setHomeAsUpIndicator(drawerArrow);
         }
 
-
-        View headerView = navigationView.inflateHeaderView(R.layout.drawer_header);
-        ImageView profile_picture = (ImageView) headerView.findViewById(R.id.profile_pic_drawer);
-
-        profile_picture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                startActivity(intent);
-            }
-        });
-        String image_link = Profile.getCurrentProfile().getProfilePictureUri(100,100).toString();
-
-        if(image_link != null && !image_link.equals(""))
-            Picasso.with(MainActivity.this)
-                    .load(image_link)
-                    .placeholder(R.drawable.default_profile_pic)
-                    .into(profile_picture);
     }
 
     @Override
