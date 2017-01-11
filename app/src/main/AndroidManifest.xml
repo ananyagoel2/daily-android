@@ -36,7 +36,7 @@
         <!-- Facebook Login end -->
 
         <activity
-            android:name="in.chefsway.chefsway.SplashActivity"
+            android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,10 +44,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="in.chefsway.chefsway.MainActivity" />
-        <activity android:name="in.chefsway.chefsway.ui.RegisterActivity" />
-        <activity android:name="in.chefsway.chefsway.ui.ProfileActivity" />
-        <activity android:name="in.chefsway.chefsway.ui.UpdateActivity"></activity>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".ui.RegisterActivity" />
+        <activity android:name=".ui.ProfileActivity" />
+        <activity android:name=".ui.UpdateActivity" />
+
+        <service
+            android:name=".services.ChefswayFirebaseMessagingService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name=".services.ChefswayFirebaseInstanceIDService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

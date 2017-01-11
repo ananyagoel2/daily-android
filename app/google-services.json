@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "440395048326",
+    "firebase_url": "https://chefsway-ad0b1.firebaseio.com",
+    "project_id": "chefsway-ad0b1",
+    "storage_bucket": "chefsway-ad0b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:440395048326:android:27caaaed47ab660f",
+        "android_client_info": {
+          "package_name": "in.chefsway.chefsway"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "440395048326-r25ivpvdj222e99fdnu4j1oqqjggblfn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.chefsway.chefsway",
+            "certificate_hash": "E19A1A36CC04EEA929128202F5985AE20D74E7EA"
+          }
+        },
+        {
+          "client_id": "440395048326-jli1vr5kvo1pk68ai3teta3gtnsqes7g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCU4w0QtlGOxp141d_1Ura7mdbbZ-6aM3k"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "440395048326-jli1vr5kvo1pk68ai3teta3gtnsqes7g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
