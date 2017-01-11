@@ -54,13 +54,27 @@ public class RecipeFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        barcodeScannerView.resume();
+        if(barcodeScannerView!=null) {
+            barcodeScannerView.resume();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        barcodeScannerView.pause();
+        if(barcodeScannerView!=null) {
+            barcodeScannerView.pause();
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            onResume();
+        }else{
+            onPause();
+        }
     }
 
 }
