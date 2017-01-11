@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,6 +21,7 @@ import com.facebook.Profile;
 import com.ikimuhendis.ldrawer.DrawerArrowDrawable;
 import com.squareup.picasso.Picasso;
 
+import in.chefsway.chefsway.adapters.MainAdapter;
 import in.chefsway.chefsway.helper.SessionHelper;
 import in.chefsway.chefsway.network.models.User;
 import in.chefsway.chefsway.ui.ProfileActivity;
@@ -87,15 +89,17 @@ public class MainActivity extends BaseActivity {
         }
 
         final MaterialTabHost materialTabHost = (MaterialTabHost) findViewById(R.id.materialTabHost);
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.main_view_pager);
 
         MaterialTabListener listener = new MaterialTabListener() {
             @Override
             public void onTabSelected(MaterialTab tab) {
-                materialTabHost.setSelectedNavigationItem(tab.getPosition());
+                viewPager.setCurrentItem(tab.getPosition(),true);
             }
 
             @Override
             public void onTabReselected(MaterialTab tab) {
+
             }
 
             @Override
@@ -106,6 +110,27 @@ public class MainActivity extends BaseActivity {
 
         materialTabHost.addTab(materialTabHost.newTab().setText("Recipe").setTabListener(listener));
         materialTabHost.addTab(materialTabHost.newTab().setText("Shop").setTabListener(listener));
+
+        viewPager.setAdapter(new MainAdapter(getSupportFragmentManager()));
+
+        ViewPager.OnPageChangeListener listener1 = new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                materialTabHost.setSelectedNavigationItem(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };
+
+        viewPager.addOnPageChangeListener(listener1);
 
     }
 
