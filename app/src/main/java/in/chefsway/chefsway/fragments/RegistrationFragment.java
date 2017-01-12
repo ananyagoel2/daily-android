@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -44,6 +46,9 @@ public class RegistrationFragment extends BaseFragment {
     private EditText input;
     private TextInputLayout inputLayout;
     private User user;
+    private Button nextButton;
+    private Button skipButton;
+
 
     public RegistrationFragment() {
 
@@ -56,6 +61,16 @@ public class RegistrationFragment extends BaseFragment {
         user = SessionHelper.getUser(sharedPreferences);
 
         key = getArguments().getString("key");
+
+        skipButton = (Button) view.findViewById(R.id.skip_button);
+        nextButton = (Button) view.findViewById(R.id.next_button);
+
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submit();
+            }
+        });
 
         input = (EditText) view.findViewById(R.id.input);
         inputLayout = (TextInputLayout) view.findViewById(R.id.input_layout);
@@ -72,16 +87,19 @@ public class RegistrationFragment extends BaseFragment {
                     name = name + " " + lastname;
                 }
                 input.setText(name);
+                skipButton.setVisibility(View.GONE);
                 break;
             case "email" :
                 input.setHint("Enter Email");
                 input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 input.setText(user.getEmail());
+                skipButton.setVisibility(View.GONE);
                 break;
             case "mobile" :
                 input.setHint("Enter Mobile");
                 input.setInputType(InputType.TYPE_CLASS_PHONE);
                 input.setText(user.getMobile());
+                skipButton.setVisibility(View.GONE);
                 break;
         }
         return view;
