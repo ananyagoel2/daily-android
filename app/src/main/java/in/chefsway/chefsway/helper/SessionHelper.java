@@ -18,8 +18,12 @@ public class SessionHelper {
 
     public static User getUser(SharedPreferences sharedPreferences) {
         Gson gson = new Gson();
-        String json = sharedPreferences.getString("CurrentUser", "");
-        return gson.fromJson(json, User.class);
+        if(sharedPreferences.contains("CurrentUser")) {
+            String json = sharedPreferences.getString("CurrentUser", "");
+            return gson.fromJson(json, User.class);
+        } else {
+            return new User();
+        }
     }
 
     public static void clearUser(SharedPreferences sharedPreferences) {
@@ -27,7 +31,7 @@ public class SessionHelper {
     }
 
     public static boolean isLoggedIn(SharedPreferences sharedPreferences) {
-        return sharedPreferences.contains("CurrentUser");
+        return sharedPreferences.contains("JWT");
     }
 
     public static void setJwtToken(SharedPreferences sharedPreferences,String jwtToken){
