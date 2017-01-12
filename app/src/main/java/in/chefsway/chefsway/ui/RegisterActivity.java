@@ -78,4 +78,14 @@ public class RegisterActivity extends BaseActivity implements RegistrationFragme
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        if(registerPager.getCurrentItem() == 0) {
+            Intent intent = new Intent(RegisterActivity.this, SplashActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            registerPager.setCurrentItem(registerPager.getCurrentItem()-1,true);
+        }
+    }
 }
