@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import in.chefsway.chefsway.fragments.RegEmailFragment;
 import in.chefsway.chefsway.fragments.RegMobileFragment;
 import in.chefsway.chefsway.fragments.RegProfileFragment;
+import in.chefsway.chefsway.fragments.RegistrationFragment;
 
 public class RegistrationAdapter extends FragmentStatePagerAdapter {
 
@@ -18,9 +19,9 @@ public class RegistrationAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
 
         switch (position) {
-            case 0 : return new RegProfileFragment();
-            case 1 : return new RegEmailFragment();
-            case 2 : return new RegMobileFragment();
+            case 0 : return RegistrationFragment.newInstance("name");
+            case 1 : return RegistrationFragment.newInstance("email");
+            case 2 : return RegistrationFragment.newInstance("mobile");
         }
         return null;
     }

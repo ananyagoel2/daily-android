@@ -1,6 +1,7 @@
 package in.chefsway.chefsway.ui;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
@@ -12,8 +13,9 @@ import in.chefsway.chefsway.custom.NonSwipableViewPager;
 import in.chefsway.chefsway.fragments.RegEmailFragment;
 import in.chefsway.chefsway.fragments.RegMobileFragment;
 import in.chefsway.chefsway.fragments.RegProfileFragment;
+import in.chefsway.chefsway.fragments.RegistrationFragment;
 
-public class RegisterActivity extends BaseActivity implements ViewPager.OnPageChangeListener,RegEmailFragment.RegCallback {
+public class RegisterActivity extends BaseActivity implements ViewPager.OnPageChangeListener,RegistrationFragment.RegFragmentCallback {
 
     private NonSwipableViewPager registerPager;
     private int registerPageCount;
@@ -50,14 +52,8 @@ public class RegisterActivity extends BaseActivity implements ViewPager.OnPageCh
             @Override
             public void onClick(View v) {
                 int currentPosition = registerPager.getCurrentItem();
-                Object fragment = registrationAdapter.instantiateItem(registerPager,currentPosition);
-                if( fragment instanceof RegProfileFragment) {
-                    ((RegProfileFragment) fragment).submit();
-                } else if( fragment instanceof RegEmailFragment) {
-                    ((RegEmailFragment) fragment).submit();
-                } else if( fragment instanceof RegMobileFragment) {
-                    ((RegMobileFragment) fragment).submit();
-                }
+                RegistrationFragment fragment = (RegistrationFragment) registrationAdapter.instantiateItem(registerPager,currentPosition);
+                fragment.submit();
             }
         });
     }
