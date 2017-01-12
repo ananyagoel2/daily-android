@@ -2,7 +2,6 @@ package in.chefsway.chefsway.network;
 
 import java.util.Map;
 
-import in.chefsway.chefsway.network.models.CheckEmail;
 import in.chefsway.chefsway.network.models.Register;
 import in.chefsway.chefsway.network.models.User;
 import retrofit2.Call;
@@ -35,6 +34,6 @@ public interface API {
                           @Header("Authorization") String authorization);
 
     @GET("/register/email/{email}")
-    Call<CheckEmail> checkEmail(@Path("email") String email);
+    Call<Void> checkEmail(@Path("email") String email);
 
 }
