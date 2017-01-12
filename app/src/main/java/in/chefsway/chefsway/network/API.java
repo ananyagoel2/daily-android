@@ -2,6 +2,7 @@ package in.chefsway.chefsway.network;
 
 import java.util.Map;
 
+import in.chefsway.chefsway.network.models.CheckEmail;
 import in.chefsway.chefsway.network.models.Register;
 import in.chefsway.chefsway.network.models.User;
 import retrofit2.Call;
@@ -27,11 +28,13 @@ public interface API {
     Call<Register> registerUser(@Field("facebook_id") String fb_id,
                                 @Field("access_token") String access_token);
 
-
     @FormUrlEncoded
     @PUT("/users/{user_id}")
     Call<Void> updateUser(@FieldMap Map<String,String> parameters,
                           @Path("user_id") String user_id ,
                           @Header("Authorization") String authorization);
+
+    @GET("/register/email/{email}")
+    Call<CheckEmail> checkEmail(@Path("email") String email);
 
 }
