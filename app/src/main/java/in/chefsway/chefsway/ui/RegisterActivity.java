@@ -65,13 +65,7 @@ public class RegisterActivity extends BaseActivity implements RegistrationFragme
 
         switch (id) {
             case android.R.id.home:
-                if(registerPager.getCurrentItem() == 0) {
-                    Intent intent = new Intent(RegisterActivity.this, SplashActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    registerPager.setCurrentItem(registerPager.getCurrentItem()-1,true);
-                }
+                onBackPressed();
                 return true;
         }
 
@@ -81,9 +75,7 @@ public class RegisterActivity extends BaseActivity implements RegistrationFragme
     @Override
     public void onBackPressed() {
         if(registerPager.getCurrentItem() == 0) {
-            Intent intent = new Intent(RegisterActivity.this, SplashActivity.class);
-            startActivity(intent);
-            finish();
+            super.onBackPressed();
         } else {
             registerPager.setCurrentItem(registerPager.getCurrentItem()-1,true);
         }

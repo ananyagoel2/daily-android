@@ -55,7 +55,7 @@ public class LoginActivity extends BaseActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
                 startActivity(intent);
-                finish();
+                //finish();
             }
         });
 
@@ -81,9 +81,7 @@ public class LoginActivity extends BaseActivity {
 
         switch (id) {
             case android.R.id.home:
-                Intent intent = new Intent(LoginActivity.this, SplashActivity.class);
-                startActivity(intent);
-                finish();
+                onBackPressed();
                 return true;
         }
 
