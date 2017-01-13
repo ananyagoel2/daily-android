@@ -3,7 +3,7 @@ package in.chefsway.chefsway;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -12,23 +12,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.facebook.Profile;
 import com.ikimuhendis.ldrawer.DrawerArrowDrawable;
-import com.squareup.picasso.Picasso;
 
 import in.chefsway.chefsway.adapters.MainAdapter;
 import in.chefsway.chefsway.helper.SessionHelper;
 import in.chefsway.chefsway.network.models.User;
-import in.chefsway.chefsway.ui.ProfileActivity;
 import in.chefsway.chefsway.ui.RegisterActivity;
-import it.neokree.materialtabs.MaterialTab;
-import it.neokree.materialtabs.MaterialTabHost;
-import it.neokree.materialtabs.MaterialTabListener;
 
 public class MainActivity extends BaseActivity {
 
@@ -88,49 +80,15 @@ public class MainActivity extends BaseActivity {
             actionBar.setHomeAsUpIndicator(drawerArrow);
         }
 
-        final MaterialTabHost materialTabHost = (MaterialTabHost) findViewById(R.id.materialTabHost);
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.main_view_pager);
-
-        MaterialTabListener listener = new MaterialTabListener() {
-            @Override
-            public void onTabSelected(MaterialTab tab) {
-                viewPager.setCurrentItem(tab.getPosition(),true);
-            }
-
-            @Override
-            public void onTabReselected(MaterialTab tab) {
-
-            }
-
-            @Override
-            public void onTabUnselected(MaterialTab tab) {
-
-            }
-        };
-
-        materialTabHost.addTab(materialTabHost.newTab().setText("Recipe").setTabListener(listener));
-        materialTabHost.addTab(materialTabHost.newTab().setText("Shop").setTabListener(listener));
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.main_view_pager);
 
         viewPager.setAdapter(new MainAdapter(getSupportFragmentManager()));
 
-        ViewPager.OnPageChangeListener listener1 = new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        tabLayout.setupWithViewPager(viewPager,true);
 
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                materialTabHost.setSelectedNavigationItem(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        };
-
-        viewPager.addOnPageChangeListener(listener1);
+        tabLayout.getTabAt(0).setText("Recipe");
+        tabLayout.getTabAt(1).setText("Shop");
 
     }
 

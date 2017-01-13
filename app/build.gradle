@@ -44,7 +44,6 @@ dependencies {
 
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.ikimuhendis:ldrawer:0.1'
-    compile 'it.neokree:MaterialTabs:0.11'
     compile 'com.journeyapps:zxing-android-embedded:3.4.0'
     testCompile 'junit:junit:4.12'
 
