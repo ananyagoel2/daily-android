@@ -7,16 +7,19 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
@@ -24,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 import in.chefsway.chefsway.MainActivity;
 import in.chefsway.chefsway.R;
@@ -40,15 +44,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LoginFragment extends BaseFragment {
 
 
-    private LoginButton loginButton;
     private CallbackManager callbackManager;
     private ProfileTracker profileTracker;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getActivity());
         callbackManager = CallbackManager.Factory.create();
-
     }
 
     @Nullable
@@ -60,26 +63,33 @@ public class LoginFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        loginButton = (LoginButton) view.findViewById(R.id.fb_login_button);
+        final LoginButton loginButton = (LoginButton) view.findViewById(R.id.fb_login_button);
         loginButton.setFragment(this);
 
-        loginButton.setReadPermissions(
-                Arrays.asList(
-                        "user_birthday",
-                        "email",
-                        "user_likes",
-                        "user_tagged_places",
-                        "user_photos",
-                        "user_work_history",
-                        "user_education_history"
-                        )
+        final Button loginButtonView = (Button) view.findViewById(R.id.fb_login_button_view);
+
+        final Collection<String> permissions = Arrays.asList(
+                "user_birthday",
+                "email",
+                "user_likes",
+                "user_tagged_places",
+                "user_photos",
+                "user_work_history",
+                "user_education_history"
         );
 
+        loginButtonView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //loginButton.performClick();
+            }
+        });
+
         // Callback registration
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Toast.makeText(getActivity().getApplicationContext(), "Login Successfull" , Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), "Login Successful" , Toast.LENGTH_LONG).show();
 
                 SessionHelper.clearUser(sharedPreferences);
 
@@ -94,7 +104,7 @@ public class LoginFragment extends BaseFragment {
 
                     API api = retrofit.create(API.class);
                     retrofit2.Call<Register> registerResponseCall = api.registerUser(
-                            newProfile.getId(),AccessToken.getCurrentAccessToken().getToken().toString());
+                            newProfile.getId(),AccessToken.getCurrentAccessToken().getToken());
 
                     registerResponseCall.enqueue(callback);
 
@@ -113,7 +123,7 @@ public class LoginFragment extends BaseFragment {
 
                             API api = retrofit.create(API.class);
                             retrofit2.Call<Register> registerResponseCall = api.registerUser(
-                                    newProfile.getId(),AccessToken.getCurrentAccessToken().getToken().toString());
+                                    newProfile.getId(),AccessToken.getCurrentAccessToken().getToken());
 
                             registerResponseCall.enqueue(callback);
 
@@ -141,7 +151,7 @@ public class LoginFragment extends BaseFragment {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private Callback callback = new Callback<Register>() {
+    private Callback<Register> callback = new Callback<Register>() {
 
         @Override
         public void onResponse(Call<Register> call, Response<Register> response) {
