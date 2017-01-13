@@ -78,7 +78,7 @@ public class RegistrationFragment extends BaseFragment {
         switch (key)
         {
             case "name" :
-                input.setHint("Enter Name");
+                inputLayout.setHint("Enter Name");
                 input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
                 String firstname = (user.getFirstName()!=null)? user.getFirstName() : "" ;
                 String lastname = (user.getLastName()!=null)? user.getLastName() : "" ;
@@ -90,15 +90,15 @@ public class RegistrationFragment extends BaseFragment {
                 skipButton.setVisibility(View.GONE);
                 break;
             case "email" :
-                input.setHint("Enter Email");
+                inputLayout.setHint("Enter Email");
                 input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-                input.setText(user.getEmail());
+                input.setText((user.getEmail()!=null) ? user.getEmail() : "" );
                 skipButton.setVisibility(View.GONE);
                 break;
             case "mobile" :
-                input.setHint("Enter Mobile");
+                inputLayout.setHint("Enter Mobile");
                 input.setInputType(InputType.TYPE_CLASS_PHONE);
-                input.setText(user.getMobile());
+                //input.setText(user.getMobile());
                 skipButton.setVisibility(View.GONE);
                 break;
         }
