@@ -58,6 +58,12 @@ public class SplashActivity extends BaseActivity {
 
                     } else if( code == 401 ) {
                         Toast.makeText(SplashActivity.this,"Session Expired. Login again.",Toast.LENGTH_LONG).show();
+                        SessionHelper.clearUser(sharedPreferences);
+                        Intent intent = new Intent(SplashActivity.this, SplashActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(SplashActivity.this,"Error : "+code,Toast.LENGTH_LONG).show();
                     }
                 }
 
