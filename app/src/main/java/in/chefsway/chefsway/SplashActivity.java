@@ -1,11 +1,15 @@
 package in.chefsway.chefsway;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.widget.Button;
 
 import in.chefsway.chefsway.adapters.SplashSlideshowAdapter;
 import in.chefsway.chefsway.helper.SessionHelper;
+import in.chefsway.chefsway.ui.LoginActivity;
 
 public class SplashActivity extends BaseActivity {
 
@@ -32,6 +36,17 @@ public class SplashActivity extends BaseActivity {
 
             splashPagerIndicator = (TabLayout) findViewById(R.id.splash_pager_indicator);
             splashPagerIndicator.setupWithViewPager(splashPager, true);
+
+            Button getStartedButton = (Button) findViewById(R.id.get_started_button);
+
+            getStartedButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
 
         }
 
