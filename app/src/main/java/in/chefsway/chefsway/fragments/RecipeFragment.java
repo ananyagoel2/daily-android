@@ -1,7 +1,10 @@
 package in.chefsway.chefsway.fragments;
 
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,23 +50,35 @@ public class RecipeFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe, container, false);
         barcodeScannerView = (DecoratedBarcodeView) view.findViewById(R.id.zxing_barcode_scanner);
-        barcodeScannerView.decodeSingle(callback);
+        if(ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            barcodeScannerView.decodeSingle(callback);
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.CAMERA},1);
+        }
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(barcodeScannerView!=null) {
+        if(getActivity()==null)
+            return;
+        if(ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             barcodeScannerView.resume();
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.CAMERA},1);
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if(barcodeScannerView!=null) {
+        if(getActivity()==null)
+            return;
+        if(ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             barcodeScannerView.pause();
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.CAMERA},1);
         }
     }
 
@@ -74,6 +89,21 @@ public class RecipeFragment extends BaseFragment {
             onResume();
         }else{
             onPause();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    barcodeScannerView.decodeSingle(callback);
+                } else {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.CAMERA},1);
+                }
+                return;
+            }
         }
     }
 
