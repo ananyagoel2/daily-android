@@ -3,12 +3,14 @@ package in.chefsway.chefsway;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import in.chefsway.chefsway.adapters.SplashSlideshowAdapter;
+import in.chefsway.chefsway.fragments.SplashSlideshowFragment;
 import in.chefsway.chefsway.helper.SessionHelper;
 import in.chefsway.chefsway.network.API;
 import in.chefsway.chefsway.network.models.User;
@@ -35,6 +37,10 @@ public class SplashActivity extends BaseActivity {
             String token = "JWT "+ SessionHelper.getJwtToken(sharedPreferences);
 
             setContentView(R.layout.activity_splash_static);
+
+            FragmentManager fm = getSupportFragmentManager();
+            SplashSlideshowFragment fragment = SplashSlideshowFragment.newInstance(R.drawable.splash_slide_1);
+            fm.beginTransaction().add(R.id.activity_splash_static, fragment ).commit();
 
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(API.BASEURL)
