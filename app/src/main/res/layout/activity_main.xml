@@ -50,9 +50,32 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
+            android:background="@android:color/white"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:padding="20dp"
+                android:background="@color/colorPrimary">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/default_profile_pic"/>
+
+                <TextView
+                    android:padding="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="My Account"
+                    android:textColor="@color/colorAccent"
+                    android:gravity="center_vertical"/>
+
+            </LinearLayout>
+            
             <ListView
+                android:id="@+id/navigation_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
