@@ -1,0 +1,34 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="in.chefsway.chefsway.ui.LoginActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:id="@+id/activity_login">
+
+        <fragment
+            android:name="in.chefsway.chefsway.fragments.LoginFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/fb_login_fragment">
+
+        </fragment>
+
+
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

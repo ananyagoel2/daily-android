@@ -54,13 +54,15 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <service
             android:name=".services.ChefswayFirebaseInstanceIDService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity android:name=".ui.LoginActivity"></activity>
     </application>
 
 </manifest>
