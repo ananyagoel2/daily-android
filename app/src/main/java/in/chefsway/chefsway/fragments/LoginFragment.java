@@ -33,7 +33,7 @@ import in.chefsway.chefsway.MainActivity;
 import in.chefsway.chefsway.R;
 import in.chefsway.chefsway.helper.SessionHelper;
 import in.chefsway.chefsway.network.API;
-import in.chefsway.chefsway.network.models.Register;
+import in.chefsway.chefsway.network.models.LoginRegister;
 import in.chefsway.chefsway.network.models.User;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -103,7 +103,7 @@ public class LoginFragment extends BaseFragment {
                             .build();
 
                     API api = retrofit.create(API.class);
-                    retrofit2.Call<Register> registerResponseCall = api.registerUser(
+                    retrofit2.Call<LoginRegister> registerResponseCall = api.registerUser(
                             newProfile.getId(),AccessToken.getCurrentAccessToken().getToken());
 
                     registerResponseCall.enqueue(callback);
@@ -122,7 +122,7 @@ public class LoginFragment extends BaseFragment {
                                     .build();
 
                             API api = retrofit.create(API.class);
-                            retrofit2.Call<Register> registerResponseCall = api.registerUser(
+                            retrofit2.Call<LoginRegister> registerResponseCall = api.registerUser(
                                     newProfile.getId(),AccessToken.getCurrentAccessToken().getToken());
 
                             registerResponseCall.enqueue(callback);
@@ -151,17 +151,17 @@ public class LoginFragment extends BaseFragment {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private Callback<Register> callback = new Callback<Register>() {
+    private Callback<LoginRegister> callback = new Callback<LoginRegister>() {
 
         @Override
-        public void onResponse(Call<Register> call, Response<Register> response) {
+        public void onResponse(Call<LoginRegister> call, Response<LoginRegister> response) {
             int code = response.code();
             if(code == 200){
 
-                Register register = response.body();
-                SessionHelper.setJwtToken(sharedPreferences,register.getAccessToken());
+                LoginRegister loginRegister = response.body();
+                SessionHelper.setJwtToken(sharedPreferences, loginRegister.getAccessToken());
 
-                final User user = register.getUser();
+                final User user = loginRegister.getUser();
 
                 Profile profile = Profile.getCurrentProfile();
 
@@ -205,7 +205,7 @@ public class LoginFragment extends BaseFragment {
         }
 
         @Override
-        public void onFailure(Call<Register> call, Throwable t) {
+        public void onFailure(Call<LoginRegister> call, Throwable t) {
             Toast.makeText(getActivity(), "Error : Something went wrong" , Toast.LENGTH_LONG).show();
         }
     };
