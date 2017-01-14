@@ -46,7 +46,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".ui.RegisterActivity" />
+        <activity android:name=".ui.RegisterActivity" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".ui.LoginActivity" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.ProfileActivity" />
         <activity android:name=".ui.UpdateActivity" />
 
@@ -63,7 +64,6 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".ui.LoginActivity"></activity>
     </application>
 
 </manifest>
