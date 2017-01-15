@@ -23,8 +23,8 @@ public interface API {
                        @Header("Authorization") String authorization);
 
     @FormUrlEncoded
-    @POST("/register")
-    Call<LoginRegister> registerUser(@Field("email") String email,
+    @POST("/register/email/{email}")
+    Call<LoginRegister> registerUser(@Path("email") String email,
                                      @Field("password") String password);
 
     @FormUrlEncoded
