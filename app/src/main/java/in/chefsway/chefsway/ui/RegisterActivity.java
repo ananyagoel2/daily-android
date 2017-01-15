@@ -1,27 +1,15 @@
 package in.chefsway.chefsway.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-import android.widget.Toolbar;
 
 import in.chefsway.chefsway.BaseActivity;
-import in.chefsway.chefsway.MainActivity;
 import in.chefsway.chefsway.R;
-import in.chefsway.chefsway.SplashActivity;
 import in.chefsway.chefsway.adapters.RegistrationAdapter;
 import in.chefsway.chefsway.custom.NonSwipableViewPager;
-import in.chefsway.chefsway.fragments.RegEmailFragment;
-import in.chefsway.chefsway.fragments.RegMobileFragment;
-import in.chefsway.chefsway.fragments.RegProfileFragment;
 import in.chefsway.chefsway.fragments.RegistrationFragment;
+import in.chefsway.chefsway.helper.SessionHelper;
 
 public class RegisterActivity extends BaseActivity implements RegistrationFragment.RegFragmentCallback {
 
@@ -49,7 +37,11 @@ public class RegisterActivity extends BaseActivity implements RegistrationFragme
         registerPageCount = registrationAdapter.getCount();
 
         registerPager.setAdapter(registrationAdapter);
-        registerPager.setCurrentItem(0);
+        if(SessionHelper.isLoggedIn(sharedPreferences)) {
+            registerPager.setCurrentItem(2); // After email and password
+        } else {
+            registerPager.setCurrentItem(0);
+        }
 
     }
 
