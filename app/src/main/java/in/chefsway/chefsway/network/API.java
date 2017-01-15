@@ -24,8 +24,8 @@ public interface API {
 
     @FormUrlEncoded
     @POST("/register")
-    Call<LoginRegister> registerUser(@Field("facebook_id") String fb_id,
-                                     @Field("access_token") String access_token);
+    Call<LoginRegister> registerUser(@Field("email") String email,
+                                     @Field("password") String password);
 
     @FormUrlEncoded
     @POST("/login")
