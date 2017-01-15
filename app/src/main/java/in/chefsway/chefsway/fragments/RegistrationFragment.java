@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.HashMap;
+
 import in.chefsway.chefsway.R;
 import in.chefsway.chefsway.helper.SessionHelper;
 import in.chefsway.chefsway.network.API;
@@ -129,13 +131,47 @@ public class RegistrationFragment extends BaseFragment {
 
             case "name":
                 if(validateName()) {
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl(API.BASEURL)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    API api = retrofit.create(API.class);
+
+                    final String first_name;
+                    final String last_name;
                     if(input.contains(" ")) {
-                        user.setFirstName(input.substring(0, input.indexOf(" ")));
-                        user.setLastName(input.substring(input.indexOf(" ") + 1));
+                        first_name = input.substring(0, input.indexOf(" "));
+                        last_name = input.substring(input.indexOf(" ") + 1);
                     } else {
-                        user.setFirstName(input);
+                        first_name = input;
+                        last_name = "";
                     }
-                    SessionHelper.saveUser(sharedPreferences,user);
+                    HashMap<String,String> params = new HashMap<>();
+                    params.put("first_name",first_name);
+                    params.put("last_name",last_name);
+
+                    retrofit2.Call<Void> updateNameCall = api.updateUser(params,user.getId(),"JWT "+SessionHelper.getJwtToken(sharedPreferences));
+
+                    updateNameCall.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            int code = response.code();
+                            Log.e("Code", String.valueOf(code));
+                            if(code == 200) {
+                                user.setFirstName(first_name);
+                                user.setLastName(last_name);
+                                SessionHelper.saveUser(sharedPreferences,user);
+                            } else {
+                                Toast.makeText(getActivity(),"Error : "+code,Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Toast.makeText(getActivity(),"Error : Something went wrong..",Toast.LENGTH_LONG).show();
+                        }
+                    });
                     callback.goToNextPage();
                 }
                 break;
