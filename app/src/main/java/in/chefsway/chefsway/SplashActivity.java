@@ -15,6 +15,7 @@ import in.chefsway.chefsway.helper.SessionHelper;
 import in.chefsway.chefsway.network.API;
 import in.chefsway.chefsway.network.models.User;
 import in.chefsway.chefsway.ui.LoginActivity;
+import in.chefsway.chefsway.ui.RegisterActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,7 +34,7 @@ public class SplashActivity extends BaseActivity {
 
         if(SessionHelper.isLoggedIn(sharedPreferences)) {
 
-            User user = SessionHelper.getUser(sharedPreferences);
+            final User user = SessionHelper.getUser(sharedPreferences);
             String token = "JWT "+ SessionHelper.getJwtToken(sharedPreferences);
 
             setContentView(R.layout.activity_splash_static);
@@ -58,16 +59,18 @@ public class SplashActivity extends BaseActivity {
 
                         SessionHelper.saveUser(sharedPreferences,response.body());
 
-                        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                        Intent intent ;
+                        if( user.getIsNewUser() ) {
+                            intent = new Intent(SplashActivity.this, RegisterActivity.class);
+                        } else {
+                            intent = new Intent(SplashActivity.this, MainActivity.class);
+                        }
                         startActivity(intent);
                         finish();
 
                     } else if( code == 401 ) {
                         Toast.makeText(SplashActivity.this,"Session Expired. Login again.",Toast.LENGTH_LONG).show();
                         SessionHelper.clearUser(sharedPreferences);
-                        Intent intent = new Intent(SplashActivity.this, SplashActivity.class);
-                        startActivity(intent);
-                        finish();
                     } else {
                         Toast.makeText(SplashActivity.this,"Error : "+code,Toast.LENGTH_LONG).show();
                     }
@@ -79,7 +82,8 @@ public class SplashActivity extends BaseActivity {
                 }
             });
 
-        } else {
+        }
+        if( !SessionHelper.isLoggedIn(sharedPreferences) ) {
 
             setContentView(R.layout.activity_splash);
 
