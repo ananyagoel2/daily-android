@@ -14,7 +14,8 @@ import in.chefsway.chefsway.helper.SessionHelper;
 public class RegisterActivity extends BaseActivity implements RegistrationFragment.RegFragmentCallback {
 
     private NonSwipableViewPager registerPager;
-    private int registerPageCount;
+    private int firstItemIndex;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +35,14 @@ public class RegisterActivity extends BaseActivity implements RegistrationFragme
         registerPager = (NonSwipableViewPager) findViewById(R.id.registration_pager);
 
         final RegistrationAdapter registrationAdapter = new RegistrationAdapter(getSupportFragmentManager());
-        registerPageCount = registrationAdapter.getCount();
 
         registerPager.setAdapter(registrationAdapter);
         if(SessionHelper.isLoggedIn(sharedPreferences)) {
-            registerPager.setCurrentItem(2); // After email and password
+            firstItemIndex = 2;
         } else {
-            registerPager.setCurrentItem(0);
+            firstItemIndex = 0;
         }
+        registerPager.setCurrentItem(firstItemIndex);
 
     }
 
@@ -66,7 +67,7 @@ public class RegisterActivity extends BaseActivity implements RegistrationFragme
 
     @Override
     public void onBackPressed() {
-        if(registerPager.getCurrentItem() == 0) {
+        if(registerPager.getCurrentItem() == firstItemIndex) {
             super.onBackPressed();
         } else {
             registerPager.setCurrentItem(registerPager.getCurrentItem()-1,true);
