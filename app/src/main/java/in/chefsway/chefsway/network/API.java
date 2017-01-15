@@ -28,6 +28,12 @@ public interface API {
                                      @Field("password") String password);
 
     @FormUrlEncoded
+    @POST("/users/{user_id}/mobile_verification")
+    Call<Void> requestOTP(@Field("mobile_number") String mobile_number,
+                          @Path("user_id") String user_id ,
+                          @Header("Authorization") String authorization);
+
+    @FormUrlEncoded
     @POST("/login")
     Call<LoginRegister> loginUser(@Field("email") String email,
                                   @Field("password") String password);
@@ -40,5 +46,9 @@ public interface API {
 
     @GET("/register/email/{email}")
     Call<Void> checkEmail(@Path("email") String email);
+
+
+
+
 
 }

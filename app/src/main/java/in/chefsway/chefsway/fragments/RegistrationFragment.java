@@ -4,6 +4,7 @@ package in.chefsway.chefsway.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -92,7 +93,7 @@ public class RegistrationFragment extends BaseFragment {
                 break;
             case "password":
                 inputLayout.setHint("Enter password");
-                input.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                input.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 skipButton.setVisibility(View.GONE);
                 break;
             case "email" :
@@ -103,8 +104,9 @@ public class RegistrationFragment extends BaseFragment {
                 break;
             case "mobile" :
                 inputLayout.setHint("Enter Mobile");
-                input.setInputType(InputType.TYPE_CLASS_PHONE);
-                //input.setText(user.getMobile());
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                int maxLength = 10;
+                input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLength)});
                 skipButton.setVisibility(View.GONE);
                 break;
         }
@@ -195,6 +197,8 @@ public class RegistrationFragment extends BaseFragment {
                                 user.setEmail(input);
                                 SessionHelper.saveUser(sharedPreferences,user);
                                 callback.goToNextPage();
+                            } else {
+                                Toast.makeText(getActivity(),"Error : "+code,Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -207,7 +211,33 @@ public class RegistrationFragment extends BaseFragment {
                 break;
 
             case "mobile":
-                //callback.goToNextPage();
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(API.BASEURL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                API api = retrofit.create(API.class);
+                retrofit2.Call<Void> requestOtpCall = api.requestOTP(input,user.getId(),"JWT "+SessionHelper.getJwtToken(sharedPreferences));
+
+                requestOtpCall.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        int code = response.code();
+                        if(code == 200) {
+                            // show OTP dialog
+                        } else if (code == 400){
+                            inputLayout.setError("This mobile number is associated with another account.");
+                        } else {
+                            Toast.makeText(getActivity(),"Error : "+code,Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(getActivity(),"Error : Something went wrong..",Toast.LENGTH_LONG).show();
+                    }
+                });
                 break;
         }
     }
