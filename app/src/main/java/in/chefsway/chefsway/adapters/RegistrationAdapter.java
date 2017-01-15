@@ -15,7 +15,7 @@ public class RegistrationAdapter extends FragmentStatePagerAdapter {
 
     public RegistrationAdapter(FragmentManager fm) {
         super(fm);
-        RegistrationFields = Arrays.asList("email","name","mobile");
+        RegistrationFields = Arrays.asList("email", "password" , "name","mobile");
     }
 
     @Override

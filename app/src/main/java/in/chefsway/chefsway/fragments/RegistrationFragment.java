@@ -18,6 +18,7 @@ import android.widget.Toast;
 import in.chefsway.chefsway.R;
 import in.chefsway.chefsway.helper.SessionHelper;
 import in.chefsway.chefsway.network.API;
+import in.chefsway.chefsway.network.models.LoginRegister;
 import in.chefsway.chefsway.network.models.User;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -89,6 +90,11 @@ public class RegistrationFragment extends BaseFragment {
                 input.setText(name);
                 skipButton.setVisibility(View.GONE);
                 break;
+            case "password":
+                inputLayout.setHint("Enter password");
+                input.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                skipButton.setVisibility(View.GONE);
+                break;
             case "email" :
                 inputLayout.setHint("Enter Email");
                 input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
@@ -129,6 +135,42 @@ public class RegistrationFragment extends BaseFragment {
                     }
                     SessionHelper.saveUser(sharedPreferences,user);
                     callback.goToNextPage();
+                }
+                break;
+
+            case "password" :
+                if(validatePassword()) {
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl(API.BASEURL)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    API api = retrofit.create(API.class);
+
+                    User user = SessionHelper.getUser(sharedPreferences);
+
+                    retrofit2.Call<LoginRegister> registerUserCall = api.registerUser(user.getEmail(),input);
+
+                    registerUserCall.enqueue(new Callback<LoginRegister>() {
+                        @Override
+                        public void onResponse(Call<LoginRegister> call, Response<LoginRegister> response) {
+                            int code = response.code();
+                            if(code == 200) {
+                                LoginRegister loginRegister = response.body();
+                                SessionHelper.saveUser(sharedPreferences,loginRegister.getUser());
+                                SessionHelper.setJwtToken(sharedPreferences,loginRegister.getAccessToken());
+                                callback.goToNextPage();
+                            } else {
+                                Toast.makeText(getActivity(),"Error : "+code,Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<LoginRegister> call, Throwable t) {
+                            Toast.makeText(getActivity(),"Error : Something went wrong..",Toast.LENGTH_LONG).show();
+                        }
+                    });
+
                 }
                 break;
 
@@ -200,6 +242,9 @@ public class RegistrationFragment extends BaseFragment {
     private boolean validatePassword() {
         if (input.getText().toString().trim().isEmpty()) {
             inputLayout.setError("Password cannot be left blank");
+            return false;
+        } else if (input.getText().toString().trim().length() < 8 ) {
+            inputLayout.setError("Password needs to be atleast 8 characters");
             return false;
         } else {
             inputLayout.setErrorEnabled(false);
