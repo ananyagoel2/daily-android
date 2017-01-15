@@ -1,11 +1,14 @@
 package in.chefsway.chefsway.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
 import in.chefsway.chefsway.BaseActivity;
+import in.chefsway.chefsway.MainActivity;
 import in.chefsway.chefsway.R;
+import in.chefsway.chefsway.adapters.MainAdapter;
 import in.chefsway.chefsway.adapters.RegistrationAdapter;
 import in.chefsway.chefsway.custom.NonSwipableViewPager;
 import in.chefsway.chefsway.fragments.RegistrationFragment;
@@ -14,6 +17,7 @@ import in.chefsway.chefsway.helper.SessionHelper;
 public class RegisterActivity extends BaseActivity implements RegistrationFragment.RegFragmentCallback {
 
     private NonSwipableViewPager registerPager;
+    private RegistrationAdapter registrationAdapter;
     private int firstItemIndex;
 
 
@@ -34,7 +38,7 @@ public class RegisterActivity extends BaseActivity implements RegistrationFragme
 
         registerPager = (NonSwipableViewPager) findViewById(R.id.registration_pager);
 
-        final RegistrationAdapter registrationAdapter = new RegistrationAdapter(getSupportFragmentManager());
+        registrationAdapter = new RegistrationAdapter(getSupportFragmentManager());
 
         registerPager.setAdapter(registrationAdapter);
         if(SessionHelper.isLoggedIn(sharedPreferences)) {
@@ -48,7 +52,13 @@ public class RegisterActivity extends BaseActivity implements RegistrationFragme
 
     @Override
     public void goToNextPage() {
-        registerPager.setCurrentItem(registerPager.getCurrentItem()+1,true);
+        if(registerPager.getCurrentItem() == registrationAdapter.getCount()) {
+            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            registerPager.setCurrentItem(registerPager.getCurrentItem()+1,true);
+        }
     }
 
     @Override
