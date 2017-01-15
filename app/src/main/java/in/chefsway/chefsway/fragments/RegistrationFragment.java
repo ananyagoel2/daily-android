@@ -1,9 +1,14 @@
 package in.chefsway.chefsway.fragments;
 
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -14,15 +19,22 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import in.chefsway.chefsway.R;
 import in.chefsway.chefsway.helper.SessionHelper;
 import in.chefsway.chefsway.network.API;
 import in.chefsway.chefsway.network.models.LoginRegister;
 import in.chefsway.chefsway.network.models.User;
+import in.chefsway.chefsway.sms.SmsListener;
+import in.chefsway.chefsway.sms.SmsReceiver;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -75,6 +87,12 @@ public class RegistrationFragment extends BaseFragment {
                 submit();
             }
         });
+        skipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callback.goToNextPage();
+            }
+        });
 
         input = (EditText) view.findViewById(R.id.input);
         inputLayout = (TextInputLayout) view.findViewById(R.id.input_layout);
@@ -111,6 +129,24 @@ public class RegistrationFragment extends BaseFragment {
                 input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLength)});
                 skipButton.setVisibility(View.GONE);
                 break;
+            case "mobile_confirm" :
+                ((TextView) view.findViewById(R.id.display_text)).setText("An OTP has been sent to Mobile number " + user.getMobile());
+                inputLayout.setHint("Enter OTP");
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                int maxLengthOTP = 4;
+                input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLengthOTP)});
+                skipButton.setVisibility(View.GONE);
+                SmsReceiver.bindListener(new SmsListener() {
+                    @Override
+                    public void messageReceived(String messageText) {
+                        Pattern pattern = Pattern.compile("(\\d{4})");
+                        Matcher matcher = pattern.matcher(messageText);
+                        if(matcher.find()) {
+                            input.setText(matcher.group(1));
+                        }
+                    }
+                });
+                break;
         }
         return view;
     }
@@ -127,17 +163,17 @@ public class RegistrationFragment extends BaseFragment {
 
     public void submit() {
         final String input = this.input.getText().toString();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(API.BASEURL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        API api = retrofit.create(API.class);
+
         switch (key) {
 
             case "name":
                 if(validateName()) {
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl(API.BASEURL)
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .build();
-
-                    API api = retrofit.create(API.class);
-
                     final String first_name;
                     final String last_name;
                     if(input.contains(" ")) {
@@ -178,12 +214,6 @@ public class RegistrationFragment extends BaseFragment {
 
             case "password" :
                 if(validatePassword()) {
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl(API.BASEURL)
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .build();
-
-                    API api = retrofit.create(API.class);
 
                     User user = SessionHelper.getUser(sharedPreferences);
 
@@ -214,12 +244,6 @@ public class RegistrationFragment extends BaseFragment {
 
             case "email":
                 if(validateEmail()) {
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl(API.BASEURL)
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .build();
-
-                    API api = retrofit.create(API.class);
                     retrofit2.Call<Void> checkEmailResponseCall = api.checkEmail(input);
 
                     checkEmailResponseCall.enqueue(new Callback<Void>() {
@@ -248,20 +272,48 @@ public class RegistrationFragment extends BaseFragment {
 
             case "mobile":
 
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(API.BASEURL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
+                if(validateMobile()) {
+                    retrofit2.Call<Void> requestOtpCall = api.requestOTP(input, user.getId(), "JWT " + SessionHelper.getJwtToken(sharedPreferences));
 
-                API api = retrofit.create(API.class);
-                retrofit2.Call<Void> requestOtpCall = api.requestOTP(input,user.getId(),"JWT "+SessionHelper.getJwtToken(sharedPreferences));
+                    requestOtpCall.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            int code = response.code();
+                            if (code == 200) {
+                                user.setMobile(input);
+                                SessionHelper.saveUser(sharedPreferences,user);
+                                callback.goToNextPage();
+                                if(!(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED
+                                        && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED)) {
+                                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_SMS ,Manifest.permission.RECEIVE_SMS},2);
+                                }
+                            } else if (code == 400) {
+                                inputLayout.setError("This mobile number is associated with another account.");
+                            } else {
+                                Toast.makeText(getActivity(), "Error : " + code, Toast.LENGTH_LONG).show();
+                            }
+                        }
 
-                requestOtpCall.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Toast.makeText(getActivity(), "Error : Something went wrong..", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    break;
+                }
+
+            case "mobile_confirm":
+
+                /*
+
+                retrofit2.Call<Void> checkOtpCall = api.checkOTP(input,user.getId(),"JWT "+SessionHelper.getJwtToken(sharedPreferences));
+
+                checkOtpCall.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         int code = response.code();
                         if(code == 200) {
-                            // show OTP dialog
+                            callback.goToNextPage();
                         } else if (code == 400){
                             inputLayout.setError("This mobile number is associated with another account.");
                         } else {
@@ -273,8 +325,10 @@ public class RegistrationFragment extends BaseFragment {
                     public void onFailure(Call<Void> call, Throwable t) {
                         Toast.makeText(getActivity(),"Error : Something went wrong..",Toast.LENGTH_LONG).show();
                     }
-                });
+                });*/
                 break;
+
+
         }
     }
 
@@ -319,7 +373,22 @@ public class RegistrationFragment extends BaseFragment {
         return true;
     }
 
+    private boolean validateMobile() {
+        if (input.getText().toString().trim().isEmpty()) {
+            inputLayout.setError("Mobile Number cannot be left blank");
+            return false;
+        } else if (input.getText().toString().trim().length() < 10 ) {
+            inputLayout.setError("Mobile Number is invalid");
+            return false;
+        } else {
+            inputLayout.setErrorEnabled(false);
+        }
+
+        return true;
+    }
+
     private static boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
+
 }
