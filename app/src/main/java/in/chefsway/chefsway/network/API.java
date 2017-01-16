@@ -33,6 +33,12 @@ public interface API {
                           @Path("user_id") String user_id ,
                           @Header("Authorization") String authorization);
 
+    @POST("/users/{user_id}/verify_OTP/{OTP}")
+    Call<Void> verifyOTP(@Path("OTP") String otp,
+                         @Path("user_id") String user_id,
+                         @Header("Authorization") String authorization);
+
+
     @FormUrlEncoded
     @POST("/login")
     Call<LoginRegister> loginUser(@Field("email") String email,

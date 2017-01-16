@@ -143,6 +143,7 @@ public class RegistrationFragment extends BaseFragment {
                         Matcher matcher = pattern.matcher(messageText);
                         if(matcher.find()) {
                             input.setText(matcher.group(1));
+                            submit();
                         }
                     }
                 });
@@ -304,20 +305,18 @@ public class RegistrationFragment extends BaseFragment {
 
             case "mobile_confirm":
 
-                /*
-
-                retrofit2.Call<Void> checkOtpCall = api.checkOTP(input,user.getId(),"JWT "+SessionHelper.getJwtToken(sharedPreferences));
+                retrofit2.Call<Void> checkOtpCall = api.verifyOTP(input,user.getId(),"JWT "+SessionHelper.getJwtToken(sharedPreferences));
 
                 checkOtpCall.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         int code = response.code();
                         if(code == 200) {
+                            user.setMobileVerified(true);
+                            SessionHelper.saveUser(sharedPreferences,user);
                             callback.goToNextPage();
-                        } else if (code == 400){
-                            inputLayout.setError("This mobile number is associated with another account.");
                         } else {
-                            Toast.makeText(getActivity(),"Error : "+code,Toast.LENGTH_LONG).show();
+                            inputLayout.setError("Invalid OTP");
                         }
                     }
 
@@ -325,7 +324,7 @@ public class RegistrationFragment extends BaseFragment {
                     public void onFailure(Call<Void> call, Throwable t) {
                         Toast.makeText(getActivity(),"Error : Something went wrong..",Toast.LENGTH_LONG).show();
                     }
-                });*/
+                });
                 break;
 
 
