@@ -1,5 +1,6 @@
 package in.chefsway.chefsway.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 
 import in.chefsway.chefsway.BaseActivity;
 import in.chefsway.chefsway.R;
+import in.chefsway.chefsway.SplashActivity;
 import in.chefsway.chefsway.helper.SessionHelper;
 import in.chefsway.chefsway.network.API;
 import in.chefsway.chefsway.network.models.User;
@@ -138,6 +140,14 @@ public class ProfileActivity extends BaseActivity {
                     enableEditing();
                 }
 
+            }
+        });
+
+        findViewById(R.id.logout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SessionHelper.clearUser(sharedPreferences);
+                finish();
             }
         });
     }
