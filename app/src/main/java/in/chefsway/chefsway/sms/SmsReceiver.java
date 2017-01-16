@@ -28,7 +28,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
             String messageBody = smsMessage.getMessageBody();
 
-            if( sender.equalsIgnoreCase(Constants.SMS_SENDER_NAME) ) {
+            if( sender.contains(Constants.SMS_SENDER_NAME) ) {
                 mListener.messageReceived(messageBody);
             }
         }
