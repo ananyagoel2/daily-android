@@ -52,7 +52,7 @@ public class RegisterActivity extends BaseActivity implements RegistrationFragme
 
     @Override
     public void goToNextPage() {
-        if(registerPager.getCurrentItem() == registrationAdapter.getCount()) {
+        if(registerPager.getCurrentItem() == registrationAdapter.getCount()-1) {
             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
