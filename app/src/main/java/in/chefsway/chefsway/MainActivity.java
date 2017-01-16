@@ -18,9 +18,7 @@ import android.widget.Toast;
 import com.ikimuhendis.ldrawer.DrawerArrowDrawable;
 
 import in.chefsway.chefsway.adapters.MainAdapter;
-import in.chefsway.chefsway.helper.SessionHelper;
-import in.chefsway.chefsway.network.models.User;
-import in.chefsway.chefsway.ui.RegisterActivity;
+import in.chefsway.chefsway.ui.ProfileActivity;
 
 public class MainActivity extends BaseActivity {
 
@@ -32,15 +30,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if(SessionHelper.isLoggedIn(sharedPreferences)) {
-            User user = SessionHelper.getUser(sharedPreferences);
-            if( user.getIsNewUser() ) {
-                Intent intent = new Intent(MainActivity.this,RegisterActivity.class);
-                startActivity(intent);
-                //finish();
-            }
-        }
 
         setContentView(R.layout.activity_main);
 
@@ -54,6 +43,14 @@ public class MainActivity extends BaseActivity {
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (LinearLayout) findViewById(R.id.navigation_drawer);
+
+        findViewById(R.id.navigation_drawer_header).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
 
         drawerArrow = new DrawerArrowDrawable(this) {
             @Override

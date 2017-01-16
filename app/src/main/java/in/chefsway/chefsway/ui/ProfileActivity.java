@@ -1,70 +1,182 @@
 package in.chefsway.chefsway.ui;
 
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.facebook.Profile;
-import com.squareup.picasso.Picasso;
+import java.util.HashMap;
 
 import in.chefsway.chefsway.BaseActivity;
 import in.chefsway.chefsway.R;
 import in.chefsway.chefsway.helper.SessionHelper;
+import in.chefsway.chefsway.network.API;
 import in.chefsway.chefsway.network.models.User;
 import in.chefsway.chefsway.utils.Utils;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProfileActivity extends BaseActivity {
 
-    private EditText first_name;
-    private EditText last_name;
+    private EditText name;
     private EditText email;
     private EditText mobile;
-    private ImageView profile_picture;
 
+    private TextInputLayout nameInput;
+    private TextInputLayout emailInput;
+    private TextInputLayout mobileInput;
+
+    private Button editButton;
+
+    private boolean editMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        User user = SessionHelper.getUser(sharedPreferences);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_action_back));
+            actionBar.setTitle("My Account");
+        }
 
-        first_name = (EditText) findViewById(R.id.first_name_editbox);
-        last_name = (EditText) findViewById(R.id.last_name_editbox);
-        email = (EditText) findViewById(R.id.email_editbox);
-        mobile = (EditText) findViewById(R.id.mobile_editbox);
-        profile_picture = (ImageView) findViewById(R.id.profile_pic);
+        final User user = SessionHelper.getUser(sharedPreferences);
 
-        first_name.setText(user.getFirstName());
-        last_name.setText(user.getLastName());
+        editButton = (Button) findViewById(R.id.edit_profile);
+
+        nameInput = (TextInputLayout) findViewById(R.id.name_input_layout);
+        emailInput = (TextInputLayout) findViewById(R.id.email_input_layout);
+        mobileInput = (TextInputLayout) findViewById(R.id.mobile_input_layout);
+
+        name = (EditText) findViewById(R.id.name_input);
+        email = (EditText) findViewById(R.id.email_input);
+        mobile = (EditText) findViewById(R.id.mobile_input);
+
+        nameInput.setHint("Name");
+        emailInput.setHint("Email");
+        mobileInput.setHint("Mobile");
+
+        name.setText(user.getFirstName() + " " + user.getLastName());
         email.setText(user.getEmail());
         mobile.setText(user.getMobile());
 
-        String image_link = Profile.getCurrentProfile().getProfilePictureUri(100,100).toString();
+        disableEditing();
 
-        if(image_link != null && !image_link.equals(""))
-            Picasso.with(ProfileActivity.this)
-                    .load(image_link)
-                    .placeholder(R.drawable.default_profile_pic)
-                    .into(profile_picture);
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (editMode) {
 
-        if(user.getEmailVerified()) {
-            email.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_action_email,0,R.drawable.ic_action_accept,0);
-        } else {
-            email.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_action_email,0,0,0);
-        }
-        if(user.getMobileVerified()) {
-            mobile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_action_phone,0,R.drawable.ic_action_accept,0);
-        } else {
-            mobile.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_action_phone,0,0,0);
-        }
-        email.setCompoundDrawablePadding(10);
-        mobile.setCompoundDrawablePadding(10);
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl(API.BASEURL)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
 
-        Utils.disableEditText(first_name);
-        Utils.disableEditText(last_name);
+                    API api = retrofit.create(API.class);
+
+                    String name_value = name.getText().toString().trim();
+                    final String email_value = email.getText().toString().trim();
+
+                    final String first_name;
+                    final String last_name;
+                    if (name_value.contains(" ")) {
+                        first_name = name_value.substring(0, name_value.indexOf(" "));
+                        last_name = name_value.substring(name_value.indexOf(" ") + 1);
+                    } else {
+                        first_name = name_value;
+                        last_name = "";
+                    }
+
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("first_name", first_name);
+                    params.put("last_name", last_name);
+                    params.put("email", email_value);
+
+                    Call<Void> updateUserCall = api.updateUser(params, user.getId(), "JWT " + SessionHelper.getJwtToken(sharedPreferences));
+
+                    updateUserCall.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            int code = response.code();
+                            Log.e("Code", String.valueOf(code));
+                            if (code == 200) {
+                                user.setFirstName(first_name);
+                                user.setLastName(last_name);
+                                user.setEmail(email_value);
+                                SessionHelper.saveUser(sharedPreferences, user);
+                            } else {
+                                name.setText(user.getFirstName() + " " + user.getLastName());
+                                email.setText(user.getEmail());
+                                mobile.setText(user.getMobile());
+                                Toast.makeText(ProfileActivity.this, "Error : " + code, Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            name.setText(user.getFirstName() + " " + user.getLastName());
+                            email.setText(user.getEmail());
+                            mobile.setText(user.getMobile());
+                            Toast.makeText(ProfileActivity.this, "Error : Something went wrong..", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    disableEditing();
+                } else {
+                    enableEditing();
+                }
+
+            }
+        });
+    }
+
+    void disableEditing() {
+
+        editMode = false;
+
+        editButton.setText("Edit Details");
+
+        Utils.disableEditText(name);
         Utils.disableEditText(email);
         Utils.disableEditText(mobile);
-
     }
+
+    void enableEditing() {
+
+        editMode = true;
+
+        editButton.setText("Save Details");
+
+        Utils.enableEditText(name);
+        Utils.enableEditText(email);
+        Utils.enableEditText(mobile);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        switch (id) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
 }
