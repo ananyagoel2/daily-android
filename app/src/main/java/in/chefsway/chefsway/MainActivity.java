@@ -18,6 +18,8 @@ import android.widget.Toast;
 import com.ikimuhendis.ldrawer.DrawerArrowDrawable;
 
 import in.chefsway.chefsway.adapters.MainAdapter;
+import in.chefsway.chefsway.helper.SessionHelper;
+import in.chefsway.chefsway.ui.LoginActivity;
 import in.chefsway.chefsway.ui.ProfileActivity;
 
 public class MainActivity extends BaseActivity {
@@ -47,8 +49,13 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.navigation_drawer_header).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                startActivity(intent);
+                if (SessionHelper.isLoggedIn(sharedPreferences)) {
+                    Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
